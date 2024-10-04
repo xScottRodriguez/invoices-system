@@ -1,0 +1,41 @@
+
+services:
+  db:
+    image: postgres:15.0 
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root.123
+      POSTGRES_DB: inventory
+    ports:
+    - '5432:5432'
+    networks:
+      - prueba-network
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  task-api:
+    depends_on:
+      - db
+    container_name: api
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    restart: always
+    volumes:
+      - ./src:/usr/src/app/src
+      - /usr/src/app/node_modules
+    env_file:
+      ".env"
+    ports:
+      - "${PORT}:4000" 
+    command: pnpm start:dev
+    networks:
+      - prueba-network
+
+volumes:
+  db-data:
+
+networks:
+  prueba-network:
+    driver: bridge

@@ -1,0 +1,123 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(100)
+  email     String   @unique @db.VarChar(100)
+  password  String   @db.VarChar(255)
+  roleId    Int?
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  role      Role?    @relation(fields: [roleId], references: [id])
+  sales     Sale[]
+}
+
+model Role {
+  id              Int              @id @default(autoincrement())
+  name            String           @db.VarChar(50)
+  users           User[]
+  rolePermissions RolePermission[]
+}
+
+model Product {
+  id              Int              @id @default(autoincrement())
+  name            String           @db.VarChar(100)
+  price           Decimal          @db.Decimal(10, 2)
+  stock           Int
+  categoryId      Int?
+  createdAt       DateTime         @default(now()) @db.Timestamp(6)
+  category        ProductCategory? @relation(fields: [categoryId], references: [id])
+  salesDetails    SalesDetail[]
+  purchaseDetails PurchaseDetail[]
+}
+
+model ProductCategory {
+  id       Int       @id @default(autoincrement())
+  name     String    @db.VarChar(100)
+  products Product[]
+}
+
+model Sale {
+  id           Int           @id @default(autoincrement())
+  userId       Int?
+  customerId   Int?
+  total        Decimal       @db.Decimal(10, 2)
+  createdAt    DateTime      @default(now()) @db.Timestamp(6)
+  user         User?         @relation(fields: [userId], references: [id])
+  customer     Customer?     @relation(fields: [customerId], references: [id])
+  salesDetails SalesDetail[]
+}
+
+model SalesDetail {
+  id         Int       @id @default(autoincrement())
+  saleId     Int
+  productId  Int
+  quantity   Int
+  price      Decimal   @db.Decimal(10, 2)
+  discountId Int?
+  sale       Sale      @relation(fields: [saleId], references: [id])
+  product    Product   @relation(fields: [productId], references: [id])
+  discount   Discount? @relation(fields: [discountId], references: [id])
+}
+
+model Discount {
+  id           Int           @id @default(autoincrement())
+  name         String        @db.VarChar(200)
+  salesDetails SalesDetail[]
+}
+
+model Customer {
+  id    Int    @id @default(autoincrement())
+  name  String @db.VarChar(100)
+  email String @unique @db.VarChar(100)
+  sales Sale[]
+}
+
+model Supplier {
+  id           Int        @id @default(autoincrement())
+  name         String     @db.VarChar(100)
+  contactEmail String?    @db.VarChar(100)
+  phone        String?    @db.VarChar(20)
+  address      String?    @db.VarChar(255)
+  purchases    Purchase[]
+}
+
+model Purchase {
+  id              Int              @id @default(autoincrement())
+  supplierId      Int
+  total           Decimal          @db.Decimal(10, 2)
+  createdAt       DateTime         @default(now()) @db.Timestamp(6)
+  supplier        Supplier         @relation(fields: [supplierId], references: [id])
+  purchaseDetails PurchaseDetail[]
+}
+
+model PurchaseDetail {
+  id         Int      @id @default(autoincrement())
+  purchaseId Int
+  productId  Int
+  quantity   Int
+  price      Decimal  @db.Decimal(10, 2)
+  purchase   Purchase @relation(fields: [purchaseId], references: [id])
+  product    Product  @relation(fields: [productId], references: [id])
+}
+
+model Permission {
+  id              Int              @id @default(autoincrement())
+  name            String           @db.VarChar(100)
+  description     String?          @db.Text
+  rolePermissions RolePermission[]
+}
+
+model RolePermission {
+  id           Int        @id @default(autoincrement())
+  roleId       Int
+  permissionId Int
+  role         Role       @relation(fields: [roleId], references: [id])
+  permission   Permission @relation(fields: [permissionId], references: [id])
+}

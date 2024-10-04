@@ -1,0 +1,10 @@
+node_modules
+dist
+public
+db
+
+.env.*
+.lintstagedrc
+.prettierignore
+.eslintignore
+package*

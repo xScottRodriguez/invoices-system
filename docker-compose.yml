@@ -1,0 +1,45 @@
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sqlserver
+    ports:
+      - '1433:1433'
+    environment:
+      ACCEPT_EULA: 'Y'
+      MSSQL_SA_PASSWORD: ${DB_PASSWORD}
+    mem_limit: 4g
+    mem_reservation: 2g
+    networks:
+      - prueba-network
+
+  task-api:
+    depends_on:
+      - db
+    container_name: api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_USER=${DB_USER}
+      - DB_NAME=${DB_NAME}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_DIALECT=${DB_DIALECT}
+      - NODE_ENV=production
+      - PORT=${PORT}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
+    ports:
+      - "${PORT}:3000" 
+    networks:
+      - prueba-network
+
+
+volumes:
+  sqlserver-data:
+    driver: local
+
+networks:
+  prueba-network:
+    driver: bridge
