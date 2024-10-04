@@ -2,7 +2,7 @@ node_modules
 dist
 public
 db
-
+.husky/
 .env.*
 .lintstagedrc
 .prettierignore
