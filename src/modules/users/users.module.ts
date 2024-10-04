@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
+import { ResponseHandler } from 'src/common/response.handler';
+
+import { UserEntity } from './entities/user.entity';
+import { UserProvider } from './user.provider';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { UserProvider } from './user.provider';
-import { ResponseHandler } from 'src/common/response.handler';
-import { UserEntity } from './entities/user.entity';
 
 @Module({
   imports: [],

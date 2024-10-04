@@ -5,14 +5,15 @@ import {
   Logger,
   UnprocessableEntityException,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { Repositories } from 'src/config';
+
+import { UserEntity } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
+import { LoginDto } from './dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserResponseDto } from './dto/user-response.dto';
-import { UserEntity } from '../users/entities/user.entity';
-import { Repositories } from 'src/config';
-import { LoginDto } from './dto';
 import { EncoderService } from './encoder.service';
-import { JwtService } from '@nestjs/jwt';
 import { ISignIn } from './interfaces';
 
 @Injectable()

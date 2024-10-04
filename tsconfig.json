@@ -11,14 +11,14 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
-      "@/modules/*": ["src/modules/*"], 
+      "@/modules/*": ["src/modules/*"],
       "@/config/*": ["src/config/*"],
       "@/utils/*": ["src/utils/*"],
       "@/types/*": ["src/types/*"],
       "@/services/*": ["src/services/*"],
       "@/middlewares/*": ["src/middlewares/*"],
       "@/guards/*": ["src/guards/*"],
-      "@/interfaces/*": ["src/interfaces/*"],
+      "@/interfaces/*": ["src/interfaces/index"],
     },
     "incremental": true,
     "skipLibCheck": true,
@@ -26,6 +26,6 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
-  }
+    "noFallthroughCasesInSwitch": false,
+  },
 }

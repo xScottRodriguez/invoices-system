@@ -14,15 +14,15 @@ import {
   ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { IResponse, ResponseDto } from 'src/common';
 import { ResponseHandler } from 'src/common/response.handler';
 import { GetUser } from 'src/decorators';
-import { UserEntity } from './entities/user.entity';
-import { IResponse, ResponseDto } from 'src/common';
 import { JwtAuthGuard } from 'src/guard/jwt-auth.guard';
+
+import { ISignIn } from '../auth/interfaces/index';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
 import { UsersService } from './users.service';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { ISignIn } from '../auth/interfaces/index';
 
 @ApiBearerAuth()
 @ApiTags('users')
@@ -36,11 +36,11 @@ export class UsersController {
 
   @ApiOkResponse({
     description: 'User profile retrieved successfully.',
-    type: ResponseDto<UserEntity>,
+    type: ResponseDto<unknown>,
   })
   @Get('profile')
   @UseGuards(JwtAuthGuard)
-  async getProfile(@GetUser() user: UserEntity) {
+  async getProfile(@GetUser() user: unknown): Promise<IResponse<UserDto>> {
     const userDto = new UserDto(user);
     return this.responseHandler.success(
       HttpStatus.OK,
@@ -70,7 +70,7 @@ export class UsersController {
   @Delete('profile')
   @UseGuards(JwtAuthGuard)
   async deleteProfile(
-    @GetUser() user: UserEntity,
+    @GetUser() user: { id: number },
   ): Promise<IResponse<unknown>> {
     await this.userService.remove(user.id);
     return this.responseHandler.success(

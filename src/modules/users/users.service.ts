@@ -4,9 +4,10 @@ import {
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
+
 import { Repositories } from '../../config';
-import { UserEntity } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserEntity } from './entities/user.entity';
 @Injectable()
 export class UsersService {
   #logger = new Logger(UsersService.name);

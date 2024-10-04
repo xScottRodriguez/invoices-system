@@ -1,6 +1,8 @@
-import { PrismaService } from '@/modules/prisma/prisma.service';
-import { IUserRepository } from './user.interface';
 import { User } from '@prisma/client';
+
+import { PrismaService } from '@/modules/prisma/prisma.service';
+
+import { IUserRepository } from './user.interface';
 
 export class UserRepository implements IUserRepository {
   constructor(private readonly prisma: PrismaService) {}
@@ -8,16 +10,16 @@ export class UserRepository implements IUserRepository {
   findAll(): Promise<User[]> {
     throw new Error('Method not implemented.');
   }
-  findById(id: number): Promise<User | null> {
+  findById(_id: number): Promise<User | null> {
     throw new Error('Method not implemented.');
   }
-  create(userData: Partial<User>): Promise<User> {
+  create(_userData: Partial<User>): Promise<User> {
     throw new Error('Method not implemented.');
   }
-  update(id: number, userData: Partial<User>): Promise<User> {
+  update(_id: number, _userData: Partial<User>): Promise<User> {
     throw new Error('Method not implemented.');
   }
-  delete(id: number): Promise<void> {
+  delete(_id: number): Promise<void> {
     throw new Error('Method not implemented.');
   }
 }

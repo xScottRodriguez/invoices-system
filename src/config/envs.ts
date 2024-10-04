@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import 'dotenv/config';
 import * as joi from 'joi';
 

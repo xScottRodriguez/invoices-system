@@ -1,43 +1,35 @@
-import { FindOptions, CountOptions } from 'sequelize';
-import { OrderType } from 'src/enums';
+import { Prisma } from '@prisma/client';
+import { Sql } from '@prisma/client/runtime/library';
 
-// Opciones de paginación
-export interface IPaginationOptions<T> {
+export interface IPaginationOptions<T = unknown, U = unknown> {
   limit?: number;
   page?: number;
-  where?: FindOptions<T>['where'];
-  select?: Array<keyof T>;
-  orderBy?: OrderType;
+  where: T;
+  select?: U;
+  orderBy?: Prisma.SortOrder;
 }
 
-// Opciones para ejecutar consultas sin procesar
 export interface IPaginationOptionsRaw {
-  query: string;
+  query: Sql;
   limit?: number;
   page?: number;
 }
-
-// Respuesta de paginación
 export interface IPageResponse {
   prev: number | null;
   next: number | null;
   count: number;
 }
 
-// Interfaz para la respuesta de paginación
 export interface IPagination<T> {
   data: T[];
   total: number;
   page: IPageResponse;
 }
 
-// Modelo para operaciones con Sequelize
-export interface ISequelizeModel<T> {
-  findMany: (options?: FindOptions<T>) => Promise<T[]>; // Método para encontrar múltiples registros
-  count: (options?: CountOptions<T>) => Promise<number>; // Método para contar registros
+export interface IPrismaModel<T> {
+  findMany: (args?: object) => Prisma.PrismaPromise<T[]>;
+  count: (args?: object) => Prisma.PrismaPromise<number>;
 }
-
-// Interfaz para los filtros de paginación
 export interface IRepositoriesPaginations<T> {
   filters: T;
   limit: number;

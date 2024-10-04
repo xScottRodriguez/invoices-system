@@ -1,17 +1,16 @@
-import { InternalServerErrorException } from '@nestjs/common';
-import {
-  IPagination,
-  IPaginationOptions,
-  ISequelizeModel,
-} from 'src/interfaces';
+import { InternalServerErrorException, Logger } from '@nestjs/common';
+
+import { IPagination, IPaginationOptions, IPrismaModel } from '@/interfaces/';
+
 import { getTakeAndSkip } from './get-take-skip';
 
+const logger = new Logger('pageBuilder');
 /**
  * servicio de paginacion generica
  * @param {T} -> es el tipo generico a retornar
  */
 const pageBuilder = async <T>(
-  model: ISequelizeModel<T>,
+  model: IPrismaModel<T>,
   options: IPaginationOptions<T>,
 ): Promise<IPagination<T>> => {
   try {
@@ -41,6 +40,10 @@ const pageBuilder = async <T>(
       },
     };
   } catch (error) {
+    logger.error({
+      message: error.message,
+      stack: error.stack,
+    });
     throw new InternalServerErrorException(
       'Error al intentar realizar la busqueda',
     );

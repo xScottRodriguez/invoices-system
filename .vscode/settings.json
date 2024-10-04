@@ -1,8 +1,8 @@
 {
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "always"
+    "source.fixAll.eslint": "always" // Aplica ESLint al guardar
   },
-  "editor.formatOnSave": true,
+  "editor.formatOnSave": true, // Esto debe estar en true si deseas que Prettier formatee el código también.
   "editor.suggest.showKeywords": true,
   "editor.suggest.showSnippets": true,
   "path-intellisense.autoSlashAfterDirectory": true,
