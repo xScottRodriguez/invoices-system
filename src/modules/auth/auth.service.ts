@@ -73,7 +73,10 @@ export class AuthService {
         accessToken: payload,
       };
     } catch (error) {
-      this.#logger.error(error.message);
+      this.#logger.error({
+        error: error.message,
+        stack: error.stack,
+      });
       throw new InternalServerErrorException(error.message);
     }
   }

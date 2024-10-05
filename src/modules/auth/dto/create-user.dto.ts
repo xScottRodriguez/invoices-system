@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsString, Matches } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsNumber,
+  IsPositive,
+  IsString,
+  Matches,
+} from 'class-validator';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -27,4 +34,13 @@ export class CreateUserDto {
       'Password must contain at least 8 characters, one letter and one number',
   })
   readonly password: string;
+
+  @ApiProperty({
+    example: 1,
+    description: 'The role id of the user',
+  })
+  @IsNotEmpty()
+  @IsNumber()
+  @IsPositive()
+  readonly roleId: number;
 }

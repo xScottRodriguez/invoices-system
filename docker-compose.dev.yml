@@ -14,23 +14,23 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
 
-  # task-api:
-  #   depends_on:
-  #     - db
-  #   container_name: api
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.dev
-  #   restart: always
-  #   volumes:
-  #     - ./src:/usr/src/app/src
-  #     - /usr/src/app/node_modules
-  #   env_file: '.env'
-  #   ports:
-  #     - '${PORT}:4000'
-  #   command: pnpm start:dev
-  #   networks:
-  #     - prueba-network
+  inventory-api:
+    depends_on:
+      - db
+    container_name: api
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    restart: always
+    volumes:
+      - ./src:/usr/src/app/src
+      - /usr/src/app/node_modules
+    env_file: '.env'
+    ports:
+      - '${PORT}:4000'
+    command: pnpm start:dev
+    networks:
+      - prueba-network
 
 volumes:
   db-data:
