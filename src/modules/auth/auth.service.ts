@@ -1,19 +1,19 @@
 import {
-  Inject,
   Injectable,
   InternalServerErrorException,
   Logger,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Repositories } from 'src/config';
+import { User } from '@prisma/client';
+import { plainToClass } from 'class-transformer';
 
-import { UserEntity } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
 import { LoginDto } from './dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserResponseDto } from './dto/user-response.dto';
 import { EncoderService } from './encoder.service';
+import { UserEntity } from './entity/user.entity';
 import { ISignIn } from './interfaces';
 
 @Injectable()
@@ -21,16 +21,14 @@ export class AuthService {
   #logger = new Logger(AuthService.name);
   constructor(
     private readonly userService: UsersService,
-    @Inject(Repositories.User) private readonly repository: typeof UserEntity,
+    private readonly repository: UsersService,
     private readonly encoderService: EncoderService,
     private readonly jwt: JwtService,
   ) {}
 
   async signIn(user: LoginDto): Promise<ISignIn> {
     try {
-      const userFound: UserEntity = await this.userService.findByEmail(
-        user.email,
-      );
+      const userFound: User = await this.userService.findByEmail(user.email);
       if (!userFound) throw new UnprocessableEntityException('User not found');
 
       const isPasswordValid: boolean = await this.encoderService.checkPassword(
@@ -46,7 +44,7 @@ export class AuthService {
         email: userFound.email,
       });
       return {
-        user: userFound.toJSON(),
+        user: plainToClass(UserEntity, new UserEntity(userFound)),
         accessToken,
       };
     } catch (error) {
@@ -61,7 +59,7 @@ export class AuthService {
     try {
       const { password: pass, ...rest } = user;
       const password = await this.encoderService.encodePassword(pass);
-      const userCreated: UserEntity = await this.repository.create({
+      const userCreated = await this.repository.create({
         ...rest,
         password,
       });
@@ -69,8 +67,9 @@ export class AuthService {
         id: userCreated.id,
         email: userCreated.email,
       });
+      const userEntity = plainToClass(UserEntity, new UserEntity(userCreated));
       return {
-        user: new UserResponseDto(userCreated.toJSON()),
+        user: new UserResponseDto(userEntity),
         accessToken: payload,
       };
     } catch (error) {

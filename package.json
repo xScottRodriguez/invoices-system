@@ -14,7 +14,7 @@
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "prisma:generate": "prisma generate",
-    "migration:generate": "prisma migrate dev",
+    "migration:generate": "prisma migrate dev --create-only",
     "migration:up": "prisma migrate deploy",
     "migration:down": "prisma migrate dev --rollback",
     "test": "jest",
@@ -43,9 +43,7 @@
     "joi": "^17.13.3",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.8.1",
-    "sequelize-typescript": "^2.1.6",
-    "typeorm": "^0.3.19"
+    "rxjs": "^7.8.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.5.0",

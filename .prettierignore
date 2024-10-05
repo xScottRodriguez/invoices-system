@@ -8,3 +8,7 @@ db
 .prettierignore
 .eslintignore
 package*
+Docker*
+docker-compose*
+
+./prisma

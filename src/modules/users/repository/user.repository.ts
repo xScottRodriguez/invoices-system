@@ -22,4 +22,8 @@ export class UserRepository implements IUserRepository {
   delete(_id: number): Promise<void> {
     throw new Error('Method not implemented.');
   }
+
+  findByEmail(email: string): Promise<User | null> {
+    return this.prisma.user.findUnique({ where: { email } });
+  }
 }

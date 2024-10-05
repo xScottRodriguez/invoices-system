@@ -1,3 +1,14 @@
+node_modules
 dist
-**/node_modules/**
+public
+db
+.husky/
+.env.*
+.lintstagedrc
+.prettierignore
+.eslintignore
 package*
+Docker*
+docker-compose*
+
+./prisma

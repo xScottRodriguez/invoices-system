@@ -1,28 +1,29 @@
 import {
-  Inject,
   Injectable,
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
+import { User } from '@prisma/client';
 
-import { Repositories } from '../../config';
+import { CreateUserDto } from '../auth/dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserEntity } from './entities/user.entity';
+import { UserRepository } from './repository/user.repository';
 @Injectable()
 export class UsersService {
   #logger = new Logger(UsersService.name);
-  constructor(
-    @Inject(Repositories.User) private readonly repository: typeof UserEntity,
-  ) {}
+  constructor(private readonly repository: UserRepository) {}
 
-  findByEmail(email: string): Promise<UserEntity> {
-    return this.repository.findOne({ where: { email } });
+  create(user: CreateUserDto): Promise<User> {
+    return this.repository.create(user);
+  }
+  findByEmail(email: string): Promise<User> {
+    return this.repository.findByEmail(email);
   }
 
   async update(user: UpdateUserDto): Promise<void> {
     try {
       const { id, ...rest } = user;
-      await this.repository.update(rest, { where: { id } });
+      await this.repository.update(id, rest);
       return;
     } catch (error) {
       throw new InternalServerErrorException(error.message);
@@ -30,7 +31,7 @@ export class UsersService {
   }
   async remove(id: number): Promise<void> {
     try {
-      await this.repository.destroy({ where: { id } });
+      await this.repository.delete(id);
       return;
     } catch (error) {
       throw new InternalServerErrorException(error.message);

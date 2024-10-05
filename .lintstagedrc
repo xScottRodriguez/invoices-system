@@ -1,9 +1,10 @@
 {
-  "*.ts": [
+  "src/**/*.{ts,json}": [
     "eslint --fix",
     "prettier --write"
   ],
-  "!(*.ts)": [
+  "tests/**/*.{ts,json}": [
+    "eslint --fix",
     "prettier --write"
   ]
 }

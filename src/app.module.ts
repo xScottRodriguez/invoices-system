@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 
 import { AuthModule } from './modules/auth/auth.module';
+import { PermissionsModule } from './modules/permissions/permissions.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { RolePermissionsModule } from './modules/role-permissions/role-permissions.module';
 import { RolesModule } from './modules/roles/roles.module';
@@ -13,6 +14,7 @@ import { UsersModule } from './modules/users/users.module';
     RolesModule,
     RolePermissionsModule,
     PrismaModule,
+    PermissionsModule,
   ],
   controllers: [],
   providers: [],

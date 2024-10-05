@@ -20,6 +20,9 @@ import { GetUser } from 'src/decorators';
 import { JwtAuthGuard } from 'src/guard/jwt-auth.guard';
 
 import { ISignIn } from '../auth/interfaces/index';
+import { Action, Resource } from '../role-permissions/casl/action.enum';
+import { CheckActionAndResource } from '../role-permissions/casl/policies.decorator';
+import { PoliciesGuard } from '../role-permissions/casl/policies.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
 import { UsersService } from './users.service';
@@ -27,6 +30,7 @@ import { UsersService } from './users.service';
 @ApiBearerAuth()
 @ApiTags('users')
 @UseInterceptors(ClassSerializerInterceptor)
+@UseGuards(PoliciesGuard)
 @Controller('users')
 export class UsersController {
   constructor(
@@ -38,8 +42,9 @@ export class UsersController {
     description: 'User profile retrieved successfully.',
     type: ResponseDto<unknown>,
   })
-  @Get('profile')
   @UseGuards(JwtAuthGuard)
+  @CheckActionAndResource(Action.read, Resource.user)
+  @Get('profile')
   async getProfile(@GetUser() user: unknown): Promise<IResponse<UserDto>> {
     const userDto = new UserDto(user);
     return this.responseHandler.success(
