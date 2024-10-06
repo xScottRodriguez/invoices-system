@@ -16,6 +16,15 @@ import { Action } from '../../../enums/action.enum';
 
 export type AppAbility = PureAbility<[Action, string]>;
 
+/**
+ * CaslAbilityFactory - Factory to create ability for user
+ * @class CaslAbilityFactory
+ * @exports CaslAbilityFactory
+ * @injectable - Injectable
+ * @param {PermissionsService} permissionService - PermissionsService
+ * @method {createForUser} - Create ability for user
+ * @returns {Promise<AnyAbility>} - Returns ability for user
+ */
 @Injectable()
 export class CaslAbilityFactory {
   #logger = new Logger(CaslAbilityFactory.name);

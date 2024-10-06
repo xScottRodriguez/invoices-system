@@ -10,9 +10,16 @@ import { Reflector } from '@nestjs/core';
 import { Action } from '../../../enums/action.enum';
 import { CaslAbilityFactory } from './casl-ability.factory';
 
-/**
- * El Guard intercepta la solicitud, obtiene el rol del usuario,
- * verifica sus permisos en la base de datos y decide si la acción está permitida.
+/**\
+ * PoliciesGuard - Guard to check if user has permission to perform action on resource
+ * @class PoliciesGuard
+ * @implements {CanActivate}
+ * @exports PoliciesGuard
+ * @injectable - Injectable
+ * @param {Reflector} reflector - Reflector
+ * @param {CaslAbilityFactory} caslAbilityFactory - CaslAbilityFactory
+ * @method {canActivate} - Check if user has permission to perform action on resource
+ * @returns {boolean} - Returns true if user has permission to perform action on resource
  */
 @Injectable()
 export class PoliciesGuard implements CanActivate {
@@ -25,13 +32,11 @@ export class PoliciesGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
       const req = context.switchToHttp().getRequest();
-      const user = req.user; // Obtenemos el usuario de la request
+      const user = req.user;
 
-      // Crea la habilidad del usuario
       const ability: AnyAbility =
         await this.caslAbilityFactory.createForUser(user);
 
-      // Obtener la acción y el recurso del endpoint actual
       const action = this.reflector.get<Action>('action', context.getHandler());
       const resource = this.reflector.get<string>(
         'resource',
