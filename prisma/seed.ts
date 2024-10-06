@@ -1,14 +1,11 @@
 import { PrismaClient, Resource, Role } from '@prisma/client';
 
-import {
-  Action,
-  Resource as ResourcesEnum,
-} from '@/modules/role-permissions/casl/action.enum';
+import { Action, Resource as ResourcesEnum } from '../src/enums';
 
 interface IAction {
   action: Action;
 }
-export class MainSeeder {
+class MainSeeder {
   #prisma: PrismaClient = new PrismaClient();
   async defaultRoles(): Promise<{ adminRole: Role; userRole: Role }> {
     const adminRole = await this.#prisma.role.upsert({
@@ -74,3 +71,6 @@ export class MainSeeder {
     await this.defaultRoles();
   };
 }
+
+const mainSeeder = new MainSeeder();
+mainSeeder.build();

@@ -17,6 +17,7 @@
     "migration:generate": "prisma migrate dev --create-only",
     "migration:up": "prisma migrate deploy",
     "migration:down": "prisma migrate dev --rollback",
+    "seed": "ts-node prisma/seed.ts",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",

@@ -19,8 +19,8 @@ import { ResponseHandler } from 'src/common/response.handler';
 import { GetUser } from 'src/decorators';
 import { JwtAuthGuard } from 'src/guard/jwt-auth.guard';
 
+import { Action, Resource } from '../../enums/action.enum';
 import { ISignIn } from '../auth/interfaces/index';
-import { Action, Resource } from '../role-permissions/casl/action.enum';
 import { CheckActionAndResource } from '../role-permissions/casl/policies.decorator';
 import { PoliciesGuard } from '../role-permissions/casl/policies.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -60,6 +60,7 @@ export class UsersController {
   })
   @ApiBody({ type: UpdateUserDto })
   @Patch('profile')
+  @CheckActionAndResource(Action.update, Resource.users)
   @UseGuards(JwtAuthGuard)
   async updateProfile(
     @GetUser() user: UpdateUserDto,
@@ -73,6 +74,7 @@ export class UsersController {
   }
 
   @Delete('profile')
+  @CheckActionAndResource(Action.delete, Resource.users)
   @UseGuards(JwtAuthGuard)
   async deleteProfile(
     @GetUser() user: { id: number },

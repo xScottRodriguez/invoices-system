@@ -1,5 +1,6 @@
 import { Permission } from '@prisma/client';
 
+import { IPermission } from '@/interfaces/*';
 import { PrismaService } from '@/modules/prisma/prisma.service';
 
 import { IPermissionsRepository } from './permissions.interface';
@@ -24,13 +25,18 @@ export class PermissionsRepository implements IPermissionsRepository {
   delete(_id: number): Promise<void> {
     throw new Error('Method not implemented.');
   }
-  async getPermissionsForRole(roleId: number): Promise<Permission[]> {
+  async getPermissionsForRole(roleId: number): Promise<IPermission[]> {
     const data = await this.prismaService.rolePermission.findMany({
       where: {
         roleId,
       },
+
       include: {
-        permission: true,
+        permission: {
+          include: {
+            resource: true,
+          },
+        },
       },
     });
 

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Permission } from '@prisma/client';
+
+import { IPermission } from '@/interfaces/*';
 
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
@@ -27,7 +28,7 @@ export class PermissionsService {
   remove(id: number): string {
     return `This action removes a #${id} permission`;
   }
-  getPermissionsForRole(roleId: number): Promise<Permission[]> {
+  getPermissionsForRole(roleId: number): Promise<IPermission[]> {
     return this.permissionRepository.getPermissionsForRole(roleId);
   }
 }

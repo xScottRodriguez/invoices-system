@@ -125,11 +125,11 @@ model Permission {
 }
 
 model RolePermission {
-  id            Int        @id @default(autoincrement()) @map("id")
-  role_id       Int        @map("role_id")
-  permission_id Int        @map("permission_id")
-  role          Role       @relation(fields: [role_id], references: [id])
-  permission    Permission @relation(fields: [permission_id], references: [id])
+  id           Int        @id @default(autoincrement()) @map("id")
+  roleId       Int        @map("role_id")
+  permissionId Int        @map("permission_id")
+  role         Role       @relation(fields: [roleId], references: [id])
+  permission   Permission @relation(fields: [permissionId], references: [id])
 
   @@map("role_permissions")
 }

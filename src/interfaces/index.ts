@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, Resource } from '@prisma/client';
 import { Sql } from '@prisma/client/runtime/library';
 
 export interface IPaginationOptions<T = unknown, U = unknown> {
@@ -35,3 +35,13 @@ export interface IRepositoriesPaginations<T> {
   limit: number;
   page: number;
 }
+
+interface IPermission {
+  id: number;
+  action: string;
+  resourceId: number;
+  description: string | null;
+  resource: Resource;
+}
+
+export { IPermission };

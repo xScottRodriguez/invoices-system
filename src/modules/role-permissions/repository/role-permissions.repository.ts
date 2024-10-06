@@ -1,7 +1,6 @@
 import { RolePermission } from '@prisma/client';
 
 import { PrismaService } from '../../prisma/prisma.service';
-import { IRolePermissionForUser } from '../types';
 import { IRolePermissionRepository } from './role-permissions.interface';
 export class RolePermissionRepository implements IRolePermissionRepository {
   constructor(private readonly prismaService: PrismaService) {}
@@ -24,29 +23,5 @@ export class RolePermissionRepository implements IRolePermissionRepository {
   }
   delete(_id: number): Promise<void> {
     throw new Error('Method not implemented.');
-  }
-
-  async getPermissionsForUser(_id: number): Promise<IRolePermissionForUser> {
-    return this.prismaService.user.findFirst({
-      where: {
-        id: _id,
-      },
-      select: {
-        role: {
-          select: {
-            rolePermissions: {
-              select: {
-                permission: {
-                  select: {
-                    id: true,
-                    name: true,
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    });
   }
 }

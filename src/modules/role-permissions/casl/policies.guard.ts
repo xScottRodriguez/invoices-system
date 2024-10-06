@@ -2,7 +2,7 @@ import { AnyAbility } from '@casl/ability';
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
-import { Action } from './action.enum';
+import { Action } from '../../../enums/action.enum';
 import { CaslAbilityFactory } from './casl-ability.factory';
 
 /**
