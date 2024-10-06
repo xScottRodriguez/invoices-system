@@ -27,11 +27,12 @@ export class AuthController {
     );
   }
 
-  @ApiOkResponse({ type: ResponseDto<UserResponseDto> })
+  @ApiOkResponse({ type: ResponseDto<UserResponseDto>, status: HttpStatus.OK })
   @ApiBody({ type: LoginDto })
   @Post('sign-in')
   async signIn(@Body() user: LoginDto): Promise<IResponse<ISignIn>> {
     const data: ISignIn = await this.authService.signIn(user);
+
     return this.responseHandler.success<{
       user: UserResponseDto;
       accessToken: string;

@@ -1,16 +1,34 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
+import { Permission } from '@prisma/client';
 
 import { IPermission } from '@/interfaces/*';
 
+import { PrismaService } from '../prisma/prisma.service';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
 import { PermissionsRepository } from './repository';
 
 @Injectable()
 export class PermissionsService {
-  constructor(private readonly permissionRepository: PermissionsRepository) {}
-  create(_createPermissionDto: CreatePermissionDto): string {
-    return 'This action adds a new permission';
+  #logger = new Logger(PermissionsService.name);
+  constructor(
+    private readonly permissionRepository: PermissionsRepository,
+    private readonly prisma: PrismaService,
+  ) {}
+  async create(_createPermissionDto: CreatePermissionDto): Promise<Permission> {
+    try {
+      return await this.permissionRepository.create(_createPermissionDto);
+    } catch (error) {
+      this.#logger.error({
+        message: error.message,
+        stack: error.stack,
+      });
+      throw new InternalServerErrorException('Error creating permission');
+    }
   }
 
   findAll(): string {

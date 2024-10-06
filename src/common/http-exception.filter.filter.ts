@@ -17,12 +17,24 @@ export class HttpExceptionFilter implements ExceptionFilter {
       ? exception.getStatus()
       : HttpStatus.INTERNAL_SERVER_ERROR;
 
+    const originalResponse = exception.getResponse();
     const errorResponse = {
       statusCode: status,
       message: exception.message,
-      errors: exception.getResponse(),
+      errors: this.formatErrors(originalResponse, exception.message),
     };
 
     response.status(status).json(errorResponse);
+  }
+  private formatErrors(originalResponse: any, message: string): unknown {
+    if (typeof originalResponse === 'string') {
+      return originalResponse === message ? null : originalResponse;
+    }
+
+    if (typeof originalResponse === 'object') {
+      return { ...originalResponse, message: undefined };
+    }
+
+    return originalResponse;
   }
 }

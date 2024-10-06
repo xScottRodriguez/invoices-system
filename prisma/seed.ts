@@ -7,6 +7,7 @@ interface IAction {
 }
 class MainSeeder {
   #prisma: PrismaClient = new PrismaClient();
+
   async defaultRoles(): Promise<{ adminRole: Role; userRole: Role }> {
     const adminRole = await this.#prisma.role.upsert({
       where: { name: 'admin', id: 1 }, // Solo usas el nombre
@@ -71,6 +72,26 @@ class MainSeeder {
     });
   }
 
+  async asignPermissionsToRole(): Promise<void> {
+    const roleExists = await this.#prisma.rolePermission.findMany();
+
+    if (roleExists.length) return;
+
+    const roles = await this.#prisma.role.findMany();
+
+    const role = roles.find(role => role.name === 'admin');
+    const permissions = await this.#prisma.permission.findMany();
+
+    const data = permissions.map(permission => ({
+      roleId: role.id,
+      permissionId: permission.id,
+    }));
+
+    await this.#prisma.rolePermission.createMany({
+      data,
+    });
+    console.log('Permissions assigned to role');
+  }
   build = async (): Promise<void> => {
     await this.createResources();
     await this.createPermissions();

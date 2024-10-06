@@ -18,7 +18,14 @@ export class PermissionsRepository implements IPermissionsRepository {
     throw new Error('Method not implemented.');
   }
   create(_permissionData: Partial<Permission>): Promise<Permission> {
-    throw new Error('Method not implemented.');
+    const { action, description, resourceId } = _permissionData;
+    return this.prisma.permission.create({
+      data: {
+        action,
+        description,
+        resourceId,
+      },
+    });
   }
   update(
     _id: number,
