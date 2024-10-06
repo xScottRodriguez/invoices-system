@@ -23,6 +23,7 @@ import { GetUser } from 'src/decorators';
 import { JwtAuthGuard } from 'src/guard/jwt-auth.guard';
 
 import { Action, Resource } from '../../enums/action.enum';
+import { UserEntity } from '../auth/entity/user.entity';
 import { ISignIn } from '../auth/interfaces/index';
 import { CheckActionAndResource } from '../role-permissions/casl/policies.decorator';
 import { PoliciesGuard } from '../role-permissions/casl/policies.guard';
@@ -43,11 +44,11 @@ export class UsersController {
 
   @ApiOkResponse({
     description: 'User profile retrieved successfully.',
-    type: ResponseDto<unknown>,
+    type: ResponseDto<UserEntity>,
   })
   @CheckActionAndResource(Action.read, Resource.users)
   @Get('profile')
-  async getProfile(@GetUser() user: unknown): Promise<IResponse<UserDto>> {
+  async getProfile(@GetUser() user: UserEntity): Promise<IResponse<UserDto>> {
     const userDto = new UserDto(user);
     return this.responseHandler.success(
       HttpStatus.OK,

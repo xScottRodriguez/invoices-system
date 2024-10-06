@@ -31,8 +31,8 @@ export class PermissionsService {
     }
   }
 
-  findAll(): string {
-    return `This action returns all permissions`;
+  findAll(): Promise<Permission[]> {
+    return this.permissionRepository.findAll();
   }
 
   findOne(id: number): string {

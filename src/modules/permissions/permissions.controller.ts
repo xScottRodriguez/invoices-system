@@ -6,17 +6,30 @@ import {
   Patch,
   Param,
   Delete,
+  HttpStatus,
 } from '@nestjs/common';
-import { Permission } from '@prisma/client';
+import { ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ResponseDto } from 'src/common';
+import { ResponseHandler } from 'src/common/response.handler';
 
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
+import { Permission } from './entities/permission.entity';
 import { PermissionsService } from './permissions.service';
 
+@ApiTags('permissions')
 @Controller('permissions')
 export class PermissionsController {
-  constructor(private readonly permissionsService: PermissionsService) {}
+  constructor(
+    private readonly permissionsService: PermissionsService,
+    private readonly responseHandler: ResponseHandler,
+  ) {}
 
+  @ApiOkResponse({
+    description: 'Permission created successfully.',
+    type: Permission,
+  })
+  @ApiBody({ type: CreatePermissionDto })
   @Post()
   create(
     @Body() createPermissionDto: CreatePermissionDto,
@@ -24,9 +37,19 @@ export class PermissionsController {
     return this.permissionsService.create(createPermissionDto);
   }
 
+  @ApiOkResponse({
+    description: 'Permissions retrieved successfully.',
+    type: [Permission],
+  })
   @Get()
-  findAll(): string {
-    return this.permissionsService.findAll();
+  async findAll(): Promise<ResponseDto<Permission[]>> {
+    const data: Permission[] = await this.permissionsService.findAll();
+
+    return this.responseHandler.success(
+      HttpStatus.OK,
+      data,
+      'Permissions retrieved successfully.',
+    );
   }
 
   @Get(':id')

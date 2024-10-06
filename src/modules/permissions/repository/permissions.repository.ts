@@ -12,7 +12,7 @@ export class PermissionsRepository implements IPermissionsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   findAll(): Promise<Permission[]> {
-    throw new Error('Method not implemented.');
+    return this.prisma.permission.findMany();
   }
   findById(_id: number): Promise<Permission | null> {
     throw new Error('Method not implemented.');
