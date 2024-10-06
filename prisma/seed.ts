@@ -27,6 +27,9 @@ class MainSeeder {
     return { adminRole, userRole };
   }
   async createResources(): Promise<void> {
+    const resources = await this.#prisma.resource.findMany();
+    if (resources.length) return;
+
     const data = Object.keys(ResourcesEnum).map((resource: ResourcesEnum) => ({
       name: resource,
     }));
@@ -36,6 +39,9 @@ class MainSeeder {
   }
 
   async createPermissions(): Promise<void> {
+    const permissions = await this.#prisma.permission.findMany();
+    if (permissions.length) return;
+
     const resources: Resource[] = await this.#prisma.resource.findMany();
     const data: IAction[] = Object.values(Action).map((action: Action) => {
       return {
