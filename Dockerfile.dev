@@ -10,9 +10,13 @@ RUN npm install -g pnpm
 RUN pnpm install 
 COPY . .
 
-RUN pnpm run prisma:generate
+
+RUN apk add --no-cache openssl \
+  && sh -c  npx wait-for-it.sh db:5432 --  sh -c "sleep 5 && pnpm migrate:up" \
+  && sh -c  npx wait-for-it.sh db:5432 --  sh -c "sleep 5 && pnpm seed" \
+  && pnpm prisma:generate 
 
 EXPOSE 4000
-RUN apk add --no-cache openssl
+
 CMD ["pnpm", "start:dev"]
 

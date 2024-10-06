@@ -18,6 +18,8 @@ model User {
   roleId     Int      @map("role_id")
 
   role Role @relation(fields: [roleId], references: [id])
+
+  @@map("users")
 }
 
 model Role {
@@ -25,6 +27,8 @@ model Role {
   name        String           @map("name") @db.VarChar(50)
   permissions RolePermission[]
   users       User[]
+
+  @@map("roles")
 }
 
 model Product {
@@ -37,12 +41,16 @@ model Product {
   category         ProductCategory? @relation(fields: [category_id], references: [id])
   sales_details    SalesDetail[]
   purchase_details PurchaseDetail[]
+
+  @@map("products")
 }
 
 model ProductCategory {
   id       Int       @id @default(autoincrement()) @map("id")
   name     String    @map("name") @db.VarChar(100)
   products Product[]
+
+  @@map("product_categories")
 }
 
 model Sale {
@@ -54,6 +62,8 @@ model Sale {
   user          User?         @relation(fields: [user_id], references: [id])
   customer      Customer?     @relation(fields: [customer_id], references: [id])
   sales_details SalesDetail[]
+
+  @@map("sales")
 }
 
 model SalesDetail {
@@ -66,12 +76,16 @@ model SalesDetail {
   sale        Sale      @relation(fields: [sale_id], references: [id])
   product     Product   @relation(fields: [product_id], references: [id])
   discount    Discount? @relation(fields: [discount_id], references: [id])
+
+  @@map("sales_details")
 }
 
 model Discount {
   id            Int           @id @default(autoincrement()) @map("id")
   name          String        @map("name") @db.VarChar(200)
   sales_details SalesDetail[]
+
+  @@map("discounts")
 }
 
 model Customer {
@@ -79,6 +93,8 @@ model Customer {
   name  String @map("name") @db.VarChar(100)
   email String @unique @map("email") @db.VarChar(100)
   sales Sale[]
+
+  @@map("customers")
 }
 
 model Supplier {
@@ -88,6 +104,8 @@ model Supplier {
   phone         String?    @map("phone") @db.VarChar(20)
   address       String?    @map("address") @db.VarChar(255)
   purchases     Purchase[]
+
+  @@map("suppliers")
 }
 
 model Purchase {
@@ -97,6 +115,8 @@ model Purchase {
   created_at       DateTime         @default(now()) @map("created_at") @db.Timestamp(6)
   supplier         Supplier         @relation(fields: [supplier_id], references: [id])
   purchase_details PurchaseDetail[]
+
+  @@map("purchases")
 }
 
 model PurchaseDetail {
@@ -107,12 +127,16 @@ model PurchaseDetail {
   price       Decimal  @map("price") @db.Decimal(10, 2)
   purchase    Purchase @relation(fields: [purchase_id], references: [id])
   product     Product  @relation(fields: [product_id], references: [id])
+
+  @@map("purchase_details")
 }
 
 model Resource {
   id          Int          @id @default(autoincrement()) @map("id")
   name        String       @map("name") @db.VarChar(100)
   permissions Permission[]
+
+  @@map("resources")
 }
 
 model Permission {
@@ -122,6 +146,8 @@ model Permission {
   description    String?          @map("description") @db.Text
   resource       Resource         @relation(fields: [resourceId], references: [id])
   rolePermission RolePermission[]
+
+  @@map("permissions")
 }
 
 model RolePermission {
