@@ -6,7 +6,7 @@ import {
   MongoQuery,
   PureAbility,
 } from '@casl/ability';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { User } from '@prisma/client';
 
 import { IPermission } from '@/interfaces/*';
@@ -18,11 +18,13 @@ export type AppAbility = PureAbility<[Action, string]>;
 
 @Injectable()
 export class CaslAbilityFactory {
+  #logger = new Logger(CaslAbilityFactory.name);
   constructor(private permissionService: PermissionsService) {}
 
   async createForUser(user: User): Promise<AnyAbility> {
     const data: IPermission[] =
       await this.permissionService.getPermissionsForRole(user.roleId);
+
     return this.defineAbility(data);
   }
 
@@ -33,6 +35,7 @@ export class CaslAbilityFactory {
 
     permissions.forEach(permission => {
       const { action, resource } = permission;
+
       can(action, resource.name);
     });
 

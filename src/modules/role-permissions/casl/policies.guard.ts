@@ -1,5 +1,10 @@
 import { AnyAbility } from '@casl/ability';
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
 import { Action } from '../../../enums/action.enum';
@@ -11,30 +16,45 @@ import { CaslAbilityFactory } from './casl-ability.factory';
  */
 @Injectable()
 export class PoliciesGuard implements CanActivate {
+  #logger = new Logger(PoliciesGuard.name);
   constructor(
     private reflector: Reflector,
     private caslAbilityFactory: CaslAbilityFactory,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const req = context.switchToHttp().getRequest();
-    const user = req.user; // Obtenemos el usuario de la request
+    try {
+      const req = context.switchToHttp().getRequest();
+      const user = req.user; // Obtenemos el usuario de la request
 
-    // Crea la habilidad del usuario
-    const ability: AnyAbility =
-      await this.caslAbilityFactory.createForUser(user);
+      // Crea la habilidad del usuario
+      const ability: AnyAbility =
+        await this.caslAbilityFactory.createForUser(user);
 
-    // Obtener la acción y el recurso del endpoint actual
-    const action = this.reflector.get<Action>('action', context.getHandler());
-    const resource = this.reflector.get<string>(
-      'resource',
-      context.getHandler(),
-    );
+      // Obtener la acción y el recurso del endpoint actual
+      const action = this.reflector.get<Action>('action', context.getHandler());
+      const resource = this.reflector.get<string>(
+        'resource',
+        context.getHandler(),
+      );
 
-    if (!action || !resource) {
+      if (!action || !resource) {
+        return false;
+      }
+
+      const hasAllPermission = ability.can(Action.all, resource);
+
+      if (hasAllPermission) {
+        return true;
+      }
+
+      return ability.can(action, resource);
+    } catch (error) {
+      this.#logger.error({
+        message: error.message,
+        stack: error.stack,
+      });
       return false;
     }
-    // Verificar si el usuario tiene permiso para ejecutar la acción sobre el recurso
-    return ability.can(action, resource);
   }
 }

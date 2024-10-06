@@ -10,7 +10,7 @@ services:
     ports:
       - '5432:5432'
     networks:
-      - prueba-network
+      - inventory-network
     volumes:
       - db-data:/var/lib/postgresql/data
 
@@ -30,11 +30,11 @@ services:
       - '${PORT}:4000'
     command: pnpm start:dev
     networks:
-      - prueba-network
+      - inventory-network
 
 volumes:
   db-data:
 
 networks:
-  prueba-network:
+  inventory-network:
     driver: bridge

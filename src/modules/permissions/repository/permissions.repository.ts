@@ -1,3 +1,4 @@
+import { Injectable, Logger } from '@nestjs/common';
 import { Permission } from '@prisma/client';
 
 import { IPermission } from '@/interfaces/*';
@@ -5,8 +6,11 @@ import { PrismaService } from '@/modules/prisma/prisma.service';
 
 import { IPermissionsRepository } from './permissions.interface';
 
+@Injectable()
 export class PermissionsRepository implements IPermissionsRepository {
-  constructor(private readonly prismaService: PrismaService) {}
+  #logger = new Logger(PermissionsRepository.name);
+  constructor(private readonly prisma: PrismaService) {}
+
   findAll(): Promise<Permission[]> {
     throw new Error('Method not implemented.');
   }
@@ -26,11 +30,10 @@ export class PermissionsRepository implements IPermissionsRepository {
     throw new Error('Method not implemented.');
   }
   async getPermissionsForRole(roleId: number): Promise<IPermission[]> {
-    const data = await this.prismaService.rolePermission.findMany({
+    const data = await this.prisma.rolePermission.findMany({
       where: {
         roleId,
       },
-
       include: {
         permission: {
           include: {

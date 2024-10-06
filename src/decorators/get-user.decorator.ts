@@ -4,8 +4,10 @@ type TGetUserType = (...dataOrPipes: any[]) => ParameterDecorator;
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const GetUser = createParamDecorator(
-  (_data, ctx: ExecutionContext): TGetUserType => {
+  (data: string, ctx: ExecutionContext): TGetUserType => {
     const request = ctx.switchToHttp().getRequest();
-    return request.user;
+    const user = request.user;
+
+    return data ? user?.[data] : user;
   },
 );

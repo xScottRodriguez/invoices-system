@@ -30,7 +30,7 @@ import { UsersService } from './users.service';
 @ApiBearerAuth()
 @ApiTags('users')
 @UseInterceptors(ClassSerializerInterceptor)
-@UseGuards(PoliciesGuard)
+@UseGuards(JwtAuthGuard, PoliciesGuard)
 @Controller('users')
 export class UsersController {
   constructor(
@@ -42,7 +42,6 @@ export class UsersController {
     description: 'User profile retrieved successfully.',
     type: ResponseDto<unknown>,
   })
-  @UseGuards(JwtAuthGuard)
   @CheckActionAndResource(Action.read, Resource.users)
   @Get('profile')
   async getProfile(@GetUser() user: unknown): Promise<IResponse<UserDto>> {
@@ -61,7 +60,6 @@ export class UsersController {
   @ApiBody({ type: UpdateUserDto })
   @Patch('profile')
   @CheckActionAndResource(Action.update, Resource.users)
-  @UseGuards(JwtAuthGuard)
   async updateProfile(
     @GetUser() user: UpdateUserDto,
   ): Promise<IResponse<unknown>> {
@@ -75,7 +73,6 @@ export class UsersController {
 
   @Delete('profile')
   @CheckActionAndResource(Action.delete, Resource.users)
-  @UseGuards(JwtAuthGuard)
   async deleteProfile(
     @GetUser() user: { id: number },
   ): Promise<IResponse<unknown>> {

@@ -2,7 +2,8 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { ResponseHandler } from 'src/common/response.handler';
-import { envs } from 'src/config';
+
+import { envs } from '@/config/envs';
 
 import { UsersModule } from '../users/users.module';
 import { AuthController } from './auth.controller';
@@ -11,14 +12,15 @@ import { EncoderService } from './encoder.service';
 import { JwtStrategy } from './strategy';
 @Module({
   imports: [
-    UsersModule,
-    PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: envs.jwtSecret,
       signOptions: { expiresIn: envs.jwtExpiration },
     }),
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    UsersModule,
   ],
   providers: [AuthService, ResponseHandler, EncoderService, JwtStrategy],
   controllers: [AuthController],
+  exports: [JwtStrategy, PassportModule],
 })
 export class AuthModule {}

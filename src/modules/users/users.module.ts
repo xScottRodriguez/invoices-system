@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { ResponseHandler } from 'src/common/response.handler';
 
 import { UserEntity } from '../auth/entity/user.entity';
@@ -9,7 +9,7 @@ import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 
 @Module({
-  imports: [PrismaModule, PermissionsModule],
+  imports: [PrismaModule, forwardRef(() => PermissionsModule)],
   controllers: [UsersController],
   providers: [UsersService, ResponseHandler, UserEntity, UserRepository],
   exports: [UsersService],

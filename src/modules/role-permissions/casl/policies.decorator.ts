@@ -1,9 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { CustomDecorator, SetMetadata } from '@nestjs/common';
+import { applyDecorators, SetMetadata } from '@nestjs/common';
 
 import { Action } from '../../../enums/action.enum';
-
+type TCheckActionAndResource = <TFunction extends Function, Y>(
+  target: object | TFunction,
+  propertyKey?: string | symbol,
+  descriptor?: TypedPropertyDescriptor<Y>,
+) => void;
 /**
  * Decorador para establecer la acción y el recurso en el controlador o método del controlador
  * Este decorador agrega la acción y el recurso a los metadatos del endpoint.
@@ -11,5 +16,9 @@ import { Action } from '../../../enums/action.enum';
 export const CheckActionAndResource = (
   action: Action,
   resource: string,
-): CustomDecorator<string> =>
-  SetMetadata('action', action) && SetMetadata('resource', resource);
+): TCheckActionAndResource => {
+  return applyDecorators(
+    SetMetadata('action', action),
+    SetMetadata('resource', resource),
+  );
+};
