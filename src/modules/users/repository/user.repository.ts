@@ -14,8 +14,8 @@ export class UserRepository implements IUserRepository {
   findAll(): Promise<User[]> {
     throw new Error('Method not implemented.');
   }
-  findById(_id: number): Promise<User | null> {
-    throw new Error('Method not implemented.');
+  findById(_id: number): Promise<User> {
+    return this.prisma.user.findUnique({ where: { id: _id } });
   }
   create(userData: Partial<User>): Promise<User> {
     const { email, password, name, roleId } = userData;
@@ -29,10 +29,13 @@ export class UserRepository implements IUserRepository {
     });
   }
   update(_id: number, _userData: Partial<User>): Promise<User> {
-    throw new Error('Method not implemented.');
+    return this.prisma.user.update({
+      where: { id: _id },
+      data: _userData,
+    });
   }
-  delete(_id: number): Promise<void> {
-    throw new Error('Method not implemented.');
+  async delete(_id: number): Promise<void> {
+    await this.prisma.user.delete({ where: { id: _id } });
   }
 
   findByEmail(email: string): Promise<User | null> {

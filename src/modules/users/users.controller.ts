@@ -1,9 +1,12 @@
 import {
+  Body,
   ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
   HttpStatus,
+  Param,
+  ParseIntPipe,
   Patch,
   UseGuards,
   UseInterceptors,
@@ -61,7 +64,7 @@ export class UsersController {
   @Patch('profile')
   @CheckActionAndResource(Action.update, Resource.users)
   async updateProfile(
-    @GetUser() user: UpdateUserDto,
+    @Body() user: UpdateUserDto,
   ): Promise<IResponse<unknown>> {
     await this.userService.update(user);
     return this.responseHandler.success(
@@ -71,12 +74,12 @@ export class UsersController {
     );
   }
 
-  @Delete('profile')
+  @Delete('profile/:id')
   @CheckActionAndResource(Action.delete, Resource.users)
   async deleteProfile(
-    @GetUser() user: { id: number },
+    @Param('id', ParseIntPipe) userId: number,
   ): Promise<IResponse<unknown>> {
-    await this.userService.remove(user.id);
+    await this.userService.remove(userId);
     return this.responseHandler.success(
       HttpStatus.OK,
       null,

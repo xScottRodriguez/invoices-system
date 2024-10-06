@@ -2,6 +2,7 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { User } from '@prisma/client';
 
@@ -30,8 +31,8 @@ export class UsersService {
 
   async update(user: UpdateUserDto): Promise<void> {
     try {
-      const { id, ...rest } = user;
-      await this.repository.update(id, rest);
+      const { id: userId, ...rest } = user;
+      await this.repository.update(+userId, rest);
       return;
     } catch (error) {
       throw new InternalServerErrorException(error.message);
@@ -39,6 +40,10 @@ export class UsersService {
   }
   async remove(id: number): Promise<void> {
     try {
+      const userExists = await this.repository.findById(id);
+      if (!userExists)
+        throw new UnprocessableEntityException("User doesn't exist");
+
       await this.repository.delete(id);
       return;
     } catch (error) {
