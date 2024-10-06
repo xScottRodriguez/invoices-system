@@ -51,7 +51,7 @@ export class AuthService {
       this.#logger.error(error.message);
       if (error instanceof UnprocessableEntityException) throw error;
 
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException("Couldn't sign in user");
     }
   }
 
@@ -59,6 +59,7 @@ export class AuthService {
     try {
       const { password: pass, ...rest } = user;
       const password = await this.encoderService.encodePassword(pass);
+
       const userCreated = await this.repository.create({
         ...rest,
         password,
@@ -77,7 +78,7 @@ export class AuthService {
         error: error.message,
         stack: error.stack,
       });
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException("Couldn't create user");
     }
   }
 }

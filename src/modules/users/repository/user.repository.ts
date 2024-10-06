@@ -1,12 +1,14 @@
-import { Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { User } from '@prisma/client';
 
 import { PrismaService } from '@/modules/prisma/prisma.service';
 
 import { IUserRepository } from './user.interface';
 
+@Injectable()
 export class UserRepository implements IUserRepository {
   #logger = new Logger(UserRepository.name);
+
   constructor(private readonly prisma: PrismaService) {}
 
   findAll(): Promise<User[]> {
@@ -15,14 +17,14 @@ export class UserRepository implements IUserRepository {
   findById(_id: number): Promise<User | null> {
     throw new Error('Method not implemented.');
   }
-  create(_userData: Partial<User>): Promise<User> {
-    const { email, password, name, roleId } = _userData;
+  create(userData: Partial<User>): Promise<User> {
+    const { email, password, name, roleId } = userData;
     return this.prisma.user.create({
       data: {
         email,
         password,
         name,
-        roleId,
+        roleId: roleId ?? 1,
       },
     });
   }

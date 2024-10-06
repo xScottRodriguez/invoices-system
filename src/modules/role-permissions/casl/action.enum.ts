@@ -1,5 +1,5 @@
 export enum Action {
-  manage = 'manage', // Maneja todas las acciones: Create, Read, Update, Delete
+  all = 'all',
   create = 'create',
   read = 'read',
   update = 'update',
@@ -7,5 +7,18 @@ export enum Action {
 }
 
 export enum Resource {
-  user = 'User',
+  users = 'users',
+  roles = 'roles',
+  products = 'products',
+  productCategories = 'product_categories',
+  sales = 'sales',
+  salesDetails = 'sales_details',
+  discounts = 'discounts',
+  customers = 'customers',
+  suppliers = 'suppliers',
+  purchases = 'purchases',
+  purchaseDetails = 'purchase_details',
+  resources = 'resources',
+  permissions = 'permissions',
+  rolePermissions = 'role_permissions',
 }

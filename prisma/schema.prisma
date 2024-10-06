@@ -9,117 +9,127 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String   @db.VarChar(100)
-  email     String   @unique @db.VarChar(100)
-  password  String   @db.VarChar(255)
-  roleId    Int?
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  role      Role?    @relation(fields: [roleId], references: [id])
-  sales     Sale[]
+  id         Int      @id @default(autoincrement()) @map("id")
+  name       String   @map("name") @db.VarChar(100)
+  email      String   @unique @map("email") @db.VarChar(100)
+  password   String   @map("password") @db.VarChar(255)
+  created_at DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  sales      Sale[]
+  roleId     Int      @map("role_id")
+
+  role Role @relation(fields: [roleId], references: [id])
 }
 
 model Role {
-  id              Int              @id @default(autoincrement())
-  name            String           @db.VarChar(50)
-  users           User[]
-  rolePermissions RolePermission[]
+  id          Int              @id @default(autoincrement()) @map("id")
+  name        String           @map("name") @db.VarChar(50)
+  permissions RolePermission[]
+  users       User[]
 }
 
 model Product {
-  id              Int              @id @default(autoincrement())
-  name            String           @db.VarChar(100)
-  price           Decimal          @db.Decimal(10, 2)
-  stock           Int
-  categoryId      Int?
-  createdAt       DateTime         @default(now()) @db.Timestamp(6)
-  category        ProductCategory? @relation(fields: [categoryId], references: [id])
-  salesDetails    SalesDetail[]
-  purchaseDetails PurchaseDetail[]
+  id               Int              @id @default(autoincrement()) @map("id")
+  name             String           @map("name") @db.VarChar(100)
+  price            Decimal          @map("price") @db.Decimal(10, 2)
+  stock            Int              @map("stock")
+  category_id      Int?             @map("category_id")
+  created_at       DateTime         @default(now()) @map("created_at") @db.Timestamp(6)
+  category         ProductCategory? @relation(fields: [category_id], references: [id])
+  sales_details    SalesDetail[]
+  purchase_details PurchaseDetail[]
 }
 
 model ProductCategory {
-  id       Int       @id @default(autoincrement())
-  name     String    @db.VarChar(100)
+  id       Int       @id @default(autoincrement()) @map("id")
+  name     String    @map("name") @db.VarChar(100)
   products Product[]
 }
 
 model Sale {
-  id           Int           @id @default(autoincrement())
-  userId       Int?
-  customerId   Int?
-  total        Decimal       @db.Decimal(10, 2)
-  createdAt    DateTime      @default(now()) @db.Timestamp(6)
-  user         User?         @relation(fields: [userId], references: [id])
-  customer     Customer?     @relation(fields: [customerId], references: [id])
-  salesDetails SalesDetail[]
+  id            Int           @id @default(autoincrement()) @map("id")
+  user_id       Int?          @map("user_id")
+  customer_id   Int?          @map("customer_id")
+  total         Decimal       @map("total") @db.Decimal(10, 2)
+  created_at    DateTime      @default(now()) @map("created_at") @db.Timestamp(6)
+  user          User?         @relation(fields: [user_id], references: [id])
+  customer      Customer?     @relation(fields: [customer_id], references: [id])
+  sales_details SalesDetail[]
 }
 
 model SalesDetail {
-  id         Int       @id @default(autoincrement())
-  saleId     Int
-  productId  Int
-  quantity   Int
-  price      Decimal   @db.Decimal(10, 2)
-  discountId Int?
-  sale       Sale      @relation(fields: [saleId], references: [id])
-  product    Product   @relation(fields: [productId], references: [id])
-  discount   Discount? @relation(fields: [discountId], references: [id])
+  id          Int       @id @default(autoincrement()) @map("id")
+  sale_id     Int       @map("sale_id")
+  product_id  Int       @map("product_id")
+  quantity    Int       @map("quantity")
+  price       Decimal   @map("price") @db.Decimal(10, 2)
+  discount_id Int?      @map("discount_id")
+  sale        Sale      @relation(fields: [sale_id], references: [id])
+  product     Product   @relation(fields: [product_id], references: [id])
+  discount    Discount? @relation(fields: [discount_id], references: [id])
 }
 
 model Discount {
-  id           Int           @id @default(autoincrement())
-  name         String        @db.VarChar(200)
-  salesDetails SalesDetail[]
+  id            Int           @id @default(autoincrement()) @map("id")
+  name          String        @map("name") @db.VarChar(200)
+  sales_details SalesDetail[]
 }
 
 model Customer {
-  id    Int    @id @default(autoincrement())
-  name  String @db.VarChar(100)
-  email String @unique @db.VarChar(100)
+  id    Int    @id @default(autoincrement()) @map("id")
+  name  String @map("name") @db.VarChar(100)
+  email String @unique @map("email") @db.VarChar(100)
   sales Sale[]
 }
 
 model Supplier {
-  id           Int        @id @default(autoincrement())
-  name         String     @db.VarChar(100)
-  contactEmail String?    @db.VarChar(100)
-  phone        String?    @db.VarChar(20)
-  address      String?    @db.VarChar(255)
-  purchases    Purchase[]
+  id            Int        @id @default(autoincrement()) @map("id")
+  name          String     @map("name") @db.VarChar(100)
+  contact_email String?    @map("contact_email") @db.VarChar(100)
+  phone         String?    @map("phone") @db.VarChar(20)
+  address       String?    @map("address") @db.VarChar(255)
+  purchases     Purchase[]
 }
 
 model Purchase {
-  id              Int              @id @default(autoincrement())
-  supplierId      Int
-  total           Decimal          @db.Decimal(10, 2)
-  createdAt       DateTime         @default(now()) @db.Timestamp(6)
-  supplier        Supplier         @relation(fields: [supplierId], references: [id])
-  purchaseDetails PurchaseDetail[]
+  id               Int              @id @default(autoincrement()) @map("id")
+  supplier_id      Int              @map("supplier_id")
+  total            Decimal          @map("total") @db.Decimal(10, 2)
+  created_at       DateTime         @default(now()) @map("created_at") @db.Timestamp(6)
+  supplier         Supplier         @relation(fields: [supplier_id], references: [id])
+  purchase_details PurchaseDetail[]
 }
 
 model PurchaseDetail {
-  id         Int      @id @default(autoincrement())
-  purchaseId Int
-  productId  Int
-  quantity   Int
-  price      Decimal  @db.Decimal(10, 2)
-  purchase   Purchase @relation(fields: [purchaseId], references: [id])
-  product    Product  @relation(fields: [productId], references: [id])
+  id          Int      @id @default(autoincrement()) @map("id")
+  purchase_id Int      @map("purchase_id")
+  product_id  Int      @map("product_id")
+  quantity    Int      @map("quantity")
+  price       Decimal  @map("price") @db.Decimal(10, 2)
+  purchase    Purchase @relation(fields: [purchase_id], references: [id])
+  product     Product  @relation(fields: [product_id], references: [id])
+}
+
+model Resource {
+  id          Int          @id @default(autoincrement()) @map("id")
+  name        String       @map("name") @db.VarChar(100)
+  permissions Permission[]
 }
 
 model Permission {
-  id              Int              @id @default(autoincrement())
-  name            String           @db.VarChar(100)
-  description     String?          @db.Text
-  resource        String           @db.VarChar(100)
-  rolePermissions RolePermission[]
+  id             Int              @id @default(autoincrement()) @map("id")
+  action         String           @map("action") @db.VarChar(100) // Acción (e.g. 'create', 'read', 'update', 'delete')
+  resourceId     Int              @map("resource_id")
+  description    String?          @map("description") @db.Text
+  resource       Resource         @relation(fields: [resourceId], references: [id])
+  rolePermission RolePermission[]
 }
 
 model RolePermission {
-  id           Int        @id @default(autoincrement())
-  roleId       Int
-  permissionId Int
-  role         Role       @relation(fields: [roleId], references: [id])
-  permission   Permission @relation(fields: [permissionId], references: [id])
+  id            Int        @id @default(autoincrement()) @map("id")
+  role_id       Int        @map("role_id")
+  permission_id Int        @map("permission_id")
+  role          Role       @relation(fields: [role_id], references: [id])
+  permission    Permission @relation(fields: [permission_id], references: [id])
+
+  @@map("role_permissions")
 }

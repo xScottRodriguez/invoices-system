@@ -43,7 +43,7 @@ export class UsersController {
     type: ResponseDto<unknown>,
   })
   @UseGuards(JwtAuthGuard)
-  @CheckActionAndResource(Action.read, Resource.user)
+  @CheckActionAndResource(Action.read, Resource.users)
   @Get('profile')
   async getProfile(@GetUser() user: unknown): Promise<IResponse<UserDto>> {
     const userDto = new UserDto(user);

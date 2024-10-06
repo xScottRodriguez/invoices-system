@@ -14,7 +14,15 @@ export class UsersService {
   constructor(private readonly repository: UserRepository) {}
 
   create(user: CreateUserDto): Promise<User> {
-    return this.repository.create(user);
+    try {
+      return this.repository.create(user);
+    } catch (error) {
+      this.#logger.error({
+        message: error.message,
+        stack: error.stack,
+      });
+      throw new InternalServerErrorException("Couldn't create user");
+    }
   }
   findByEmail(email: string): Promise<User> {
     return this.repository.findByEmail(email);
