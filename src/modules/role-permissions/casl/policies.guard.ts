@@ -31,6 +31,7 @@ export class PoliciesGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
+      this.#logger.debug('Checking policies...');
       const req = context.switchToHttp().getRequest();
       const user = req.user;
 
@@ -49,6 +50,11 @@ export class PoliciesGuard implements CanActivate {
 
       const hasAllPermission = ability.can(Action.all, resource);
 
+      this.#logger.debug({
+        action,
+        resource,
+        hasAllPermission,
+      });
       if (hasAllPermission) {
         return true;
       }

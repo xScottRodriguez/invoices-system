@@ -13,7 +13,7 @@ import { UsersModule } from './modules/users/users.module';
   imports: [
     JwtModule.register({
       secret: envs.jwtSecret,
-      signOptions: { expiresIn: envs.jwtExpiration },
+      signOptions: { expiresIn: envs.jwtExpiration ?? '2h' },
     }),
     PrismaModule,
     UsersModule,

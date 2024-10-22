@@ -20,17 +20,12 @@ services:
     container_name: api
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.debug
     restart: always
     volumes:
       - ./src:/usr/src/app/src
       - /usr/src/app/node_modules
-    environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - PORT=${PORT}
-      - JWT_SECRET=${JWT_SECRET}
-      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
-      - NODE_ENV=development
+    env_file: '.env'
     ports:
       - '${PORT}:4000'
       - '9229:9229'

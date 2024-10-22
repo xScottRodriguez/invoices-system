@@ -21,14 +21,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: JwtPayload): Promise<unknown> {
     try {
+      this.#logger.debug('Validating...');
       const { email } = payload;
       const user: User = await this.userService.findByEmail(email);
-
       if (!user) throw new UnauthorizedException('Invalid credentials');
 
       return new UserEntity(user);
     } catch (error) {
-      this.#logger.error(error.message);
+      this.#logger.error(error);
       throw new UnauthorizedException('Invalid credentials');
     }
   }

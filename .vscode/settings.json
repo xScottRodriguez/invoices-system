@@ -5,7 +5,4 @@
   "editor.formatOnSave": true, // Esto debe estar en true si deseas que Prettier formatee el código también.
   "editor.suggest.showKeywords": true,
   "editor.suggest.showSnippets": true,
-  "path-intellisense.autoSlashAfterDirectory": true,
-  "path-intellisense.extensionOnImport": true,
-  "path-intellisense.showHiddenFiles": true
 }

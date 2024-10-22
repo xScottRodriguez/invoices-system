@@ -1,0 +1,22 @@
+FROM node:21-alpine AS builder
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+COPY pnpm-lock.yaml ./
+
+RUN npm install -g pnpm
+
+RUN pnpm install 
+COPY . .
+
+
+RUN apk add --no-cache openssl \
+  && sh -c  npx wait-for-it.sh db:5432 --  sh -c "sleep 5 && pnpm migrate:up" \
+  && sh -c  npx wait-for-it.sh db:5432 --  sh -c "sleep 5 && pnpm seed" \
+  && pnpm prisma:generate 
+
+EXPOSE 9229
+
+CMD ["pnpm", "start:debug"]
+

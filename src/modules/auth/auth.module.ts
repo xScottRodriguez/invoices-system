@@ -12,11 +12,11 @@ import { EncoderService } from './encoder.service';
 import { JwtStrategy } from './strategy';
 @Module({
   imports: [
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: envs.jwtSecret,
-      signOptions: { expiresIn: envs.jwtExpiration },
+      signOptions: { expiresIn: envs.jwtExpiration ?? '2h' },
     }),
-    PassportModule.register({ defaultStrategy: 'jwt' }),
     UsersModule,
   ],
   providers: [AuthService, ResponseHandler, EncoderService, JwtStrategy],

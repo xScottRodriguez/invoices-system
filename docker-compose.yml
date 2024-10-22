@@ -1,18 +1,19 @@
 services:
   db:
-    image: mcr.microsoft.com/mssql/server:2019-latest
-    container_name: sqlserver
-    ports:
-      - '1433:1433'
+    image: postgres:15.0
+    restart: always
+    container_name: db-inventory
     environment:
-      ACCEPT_EULA: 'Y'
-      MSSQL_SA_PASSWORD: ${DB_PASSWORD}
-    mem_limit: 4g
-    mem_reservation: 2g
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root.123
+      POSTGRES_DB: inventory
+    ports:
+      - '5432:5432'
     networks:
-      - prueba-network
-
-  task-api:
+      - inventory-network
+    volumes:
+      - db-data:/var/lib/postgresql/data
+  api:
     depends_on:
       - db
     container_name: api
@@ -20,16 +21,11 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_USER=${DB_USER}
-      - DB_NAME=${DB_NAME}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_DIALECT=${DB_DIALECT}
-      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
       - PORT=${PORT}
       - JWT_SECRET=${JWT_SECRET}
-      - JWT_EXPIRATION=${JWT_EXPIRATION}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
+      - NODE_ENV=development
     ports:
       - "${PORT}:3000" 
     networks:
