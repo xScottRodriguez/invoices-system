@@ -22,6 +22,10 @@ COPY --from=builder /usr/src/app/dist ./dist
 COPY --from=builder /usr/src/app/.sequelizerc ./
 COPY --from=builder /usr/src/app/config/config.js ./config/config.js
 COPY --from=builder /usr/src/app/migrations ./migrations
-RUN pnpm install --production
-RUN cat ./config/config.js
+
+RUN apk add --no-cache tzdata && \
+  ln -sf /usr/share/zoneinfo/$TZ /etc/localtime && \
+  echo $TZ > /etc/timezone &&\
+  pnpm install --production
+
 CMD ["sh", "-c", "npx wait-port db:1433 && pnpm migration:up && pnpm start:prod"]

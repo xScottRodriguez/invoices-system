@@ -25,7 +25,13 @@ services:
     volumes:
       - ./src:/usr/src/app/src
       - /usr/src/app/node_modules
-    env_file: '.env'
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - PORT=${PORT}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
+      - NODE_ENV=development
+      - TZ=America/El_Salvador
     ports:
       - '${PORT}:4000'
       - '9229:9229'

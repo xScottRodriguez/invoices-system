@@ -24,8 +24,9 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - PORT=${PORT}
       - JWT_SECRET=${JWT_SECRET}
-      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
-      - NODE_ENV=development
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
+      - NODE_ENV=production
+      - TZ=America/El_Salvador
     ports:
       - "${PORT}:3000" 
     networks:
