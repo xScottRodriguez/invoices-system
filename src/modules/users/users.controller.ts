@@ -66,8 +66,9 @@ export class UsersController {
   @CheckActionAndResource(Action.update, Resource.users)
   async updateProfile(
     @Body() user: UpdateUserDto,
+    @GetUser('id', ParseIntPipe) userId: number,
   ): Promise<IResponse<unknown>> {
-    await this.userService.update(user);
+    await this.userService.update(user, userId);
     return this.responseHandler.success(
       HttpStatus.OK,
       null,

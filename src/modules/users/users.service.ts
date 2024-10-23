@@ -29,10 +29,9 @@ export class UsersService {
     return this.repository.findByEmail(email);
   }
 
-  async update(user: UpdateUserDto): Promise<void> {
+  async update(user: UpdateUserDto, userId: number): Promise<void> {
     try {
-      const { id: userId, ...rest } = user;
-      await this.repository.update(+userId, rest);
+      await this.repository.update(userId, user);
       return;
     } catch (error) {
       throw new InternalServerErrorException(error.message);

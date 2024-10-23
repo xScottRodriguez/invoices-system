@@ -50,11 +50,6 @@ export class PoliciesGuard implements CanActivate {
 
       const hasAllPermission = ability.can(Action.all, resource);
 
-      this.#logger.debug({
-        action,
-        resource,
-        hasAllPermission,
-      });
       if (hasAllPermission) {
         return true;
       }
