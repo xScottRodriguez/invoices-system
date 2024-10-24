@@ -35,4 +35,15 @@ export class RoleRepository implements IRoleRepository {
     await this._prisma.role.delete({ where: { id } });
     return;
   }
+
+  async asignPermissions(id: number, permissions: number[]): Promise<Role> {
+    return this._prisma.role.update({
+      where: { id },
+      data: {
+        permissions: {
+          set: permissions.map(permission => ({ id: permission })),
+        },
+      },
+    });
+  }
 }
