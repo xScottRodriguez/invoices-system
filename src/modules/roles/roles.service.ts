@@ -5,8 +5,11 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { Role } from '@prisma/client';
+import { IPagination } from 'src/common';
+import { PaginationQueryDto } from 'src/common/dto/pagination.dto';
 
 import { CreateRoleDto } from './dto/create-role.dto';
+import { FilterRoleDto } from './dto/filter.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { RoleRepository } from './repository/role.repository';
 
@@ -20,8 +23,16 @@ export class RolesService {
     });
   }
 
-  findAll(): string {
-    return `This action returns all roles`;
+  findAll(
+    pagination: PaginationQueryDto<FilterRoleDto>,
+  ): Promise<IPagination<Role>> {
+    const { page, limit, filters, orderBy } = pagination;
+    return this.roleRepository.findAll({
+      page,
+      limit,
+      filters,
+      orderBy,
+    });
   }
 
   findOne(id: number): Promise<Role | null> {

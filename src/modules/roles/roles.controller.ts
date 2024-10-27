@@ -7,11 +7,15 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
+import { IPagination } from 'src/common';
+import { PaginationQueryDto } from 'src/common/dto/pagination.dto';
 
 import { CreateRoleDto } from './dto/create-role.dto';
+import { FilterRoleDto } from './dto/filter.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { RolesService } from './roles.service';
 
@@ -26,8 +30,10 @@ export class RolesController {
   }
 
   @Get()
-  findAll(): string {
-    return this.rolesService.findAll();
+  findAll(
+    @Query() pagination: PaginationQueryDto<FilterRoleDto>,
+  ): Promise<IPagination<Role>> {
+    return this.rolesService.findAll(pagination);
   }
 
   @Get(':id')

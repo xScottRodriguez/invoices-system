@@ -21,11 +21,26 @@ export class PaginationService {
     model: IPrismaModel<Model>,
     options: IPaginationOptions,
   ): Promise<IPagination<Model>> {
-    const { where = {}, limit, orderBy, page, select = {} } = options;
+    const { where = {}, limit, orderBy, page, select } = options;
     const { skip, take } = this.getTakeAndSkip(page, limit);
 
+    const args = {
+      skip,
+      take,
+      where,
+      orderBy,
+    };
+
+    if (
+      typeof select === 'object' &&
+      select !== null &&
+      Object.entries(select).length
+    ) {
+      args['select'] = select;
+    }
+
     const [data, totalItems] = await Promise.all([
-      model.findMany({ skip, take, where, select, orderBy }),
+      model.findMany(args),
       model.count({ where }),
     ]);
     const { totalPages, next, prev } = this.getPagination({
