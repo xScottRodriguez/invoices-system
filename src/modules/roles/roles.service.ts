@@ -10,7 +10,7 @@ import { PaginationQueryDto } from 'src/common/dto/pagination.dto';
 
 import { CreateRoleDto } from './dto/create-role.dto';
 import { FilterRoleDto } from './dto/filter.dto';
-import { UpdateRoleDto } from './dto/update-role.dto';
+import { UpdateAndRemoveRoleDto } from './dto/update-role.dto';
 import { RoleRepository } from './repository/role.repository';
 
 @Injectable()
@@ -39,20 +39,37 @@ export class RolesService {
     return this.roleRepository.findById(id);
   }
 
-  async update(id: number, _updateRoleDto: UpdateRoleDto): Promise<void> {
-    const role: Role | null = await this.roleRepository.findById(id);
+  async update(
+    roleId: number,
+    _updateAndRemoveRoleDto: UpdateAndRemoveRoleDto,
+  ): Promise<void> {
+    const role: Role | null = await this.roleRepository.findById(roleId);
     if (!role) {
-      throw new UnprocessableEntityException(`Role with id ${id} not found`);
-    }
-    try {
-      await this.roleRepository.asignPermissions(
-        id,
-        _updateRoleDto.permissions,
+      throw new UnprocessableEntityException(
+        `Role with id ${roleId} not found`,
       );
+    }
+    const permissionsOfRole: number[] =
+      await this.roleRepository.findPermissionsByRoleId(roleId);
+
+    // Get the permissions that are not in the role
+    const permissionsToCreate: number[] =
+      _updateAndRemoveRoleDto.permissions.filter(
+        permission => !permissionsOfRole.includes(permission),
+      );
+
+    try {
+      await this.roleRepository.asignPermissions(roleId, permissionsToCreate);
     } catch (error) {
       this.#logger.error(error.message, error.stack);
       throw new InternalServerErrorException("Can't update role");
     }
+  }
+  async removePermissions(
+    roleId: number,
+    permissions: number[],
+  ): Promise<void> {
+    return await this.roleRepository.removePermissions(roleId, permissions);
   }
 
   remove(id: number): string {

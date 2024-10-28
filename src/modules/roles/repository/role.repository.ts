@@ -57,13 +57,38 @@ export class RoleRepository implements IRoleRepository {
     await this._prisma.role.delete({ where: { id } });
     return;
   }
+  async findPermissionsByRoleId(roleId: number): Promise<number[]> {
+    const permissions = await this._prisma.rolePermission.findMany({
+      where: {
+        roleId,
+      },
+      select: {
+        permissionId: true,
+      },
+    });
+    if (!permissions.length) return [];
 
-  async asignPermissions(id: number, permissions: number[]): Promise<Role> {
-    return this._prisma.role.update({
-      where: { id },
-      data: {
-        permissions: {
-          set: permissions.map(permission => ({ id: permission })),
+    return permissions.map(p => p.permissionId);
+  }
+
+  async asignPermissions(roleId: number, permissions: number[]): Promise<void> {
+    await this._prisma.rolePermission.createMany({
+      data: permissions.map(permissionId => ({
+        roleId,
+        permissionId,
+      })),
+    });
+  }
+
+  async removePermissions(
+    roleId: number,
+    permissions: number[],
+  ): Promise<void> {
+    await this._prisma.rolePermission.deleteMany({
+      where: {
+        roleId,
+        permissionId: {
+          in: permissions,
         },
       },
     });
