@@ -91,9 +91,20 @@ export class RolesController {
       'Permissions removed',
     );
   }
+
+  @Delete(':id')
+  @CheckActionAndResource(Action.delete, Resource.roles)
+  async removeRole(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<ResponseDto<void>> {
+    await this.rolesService.remove(+id);
+
+    return this.response.success<void>(HttpStatus.OK, null, 'Role removed');
+  }
+
   @CheckActionAndResource(Action.delete, Resource.roles)
   @Delete(':id/toogle-active')
-  async remove(
+  async toggleActive(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<ResponseDto<string>> {
     await this.rolesService.softDelete(id);

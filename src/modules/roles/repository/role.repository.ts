@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Role } from '@prisma/client';
+import { Prisma, Role } from '@prisma/client';
 import { IPagination } from 'src/common';
 
 import { PaginationService } from '@/modules/prisma/pagination.service';
@@ -83,15 +83,21 @@ export class RoleRepository implements IRoleRepository {
   async removePermissions(
     roleId: number,
     permissions: number[],
+    tx: Prisma.TransactionClient | undefined = undefined,
   ): Promise<void> {
-    await this._prisma.rolePermission.deleteMany({
-      where: {
-        roleId,
-        permissionId: {
-          in: permissions,
-        },
+    return this._prisma.executeTransaction(
+      tx,
+      async (connection: Prisma.TransactionClient) => {
+        await connection.rolePermission.deleteMany({
+          where: {
+            roleId,
+            permissionId: {
+              in: permissions,
+            },
+          },
+        });
       },
-    });
+    );
   }
   async softDelete(roleId: number, isDeleted: boolean = false): Promise<Role> {
     return this._prisma.role.update({
@@ -102,5 +108,20 @@ export class RoleRepository implements IRoleRepository {
         isDeleted: !isDeleted,
       },
     });
+  }
+  async removeRole(
+    roleId: number,
+    tx: Prisma.TransactionClient | undefined = undefined,
+  ): Promise<void> {
+    await this._prisma.executeTransaction(
+      tx,
+      async (connection: Prisma.TransactionClient) => {
+        await connection.role.delete({
+          where: {
+            id: roleId,
+          },
+        });
+      },
+    );
   }
 }

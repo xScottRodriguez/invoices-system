@@ -4,10 +4,11 @@ import {
   Logger,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { Role } from '@prisma/client';
+import { Prisma, Role } from '@prisma/client';
 import { IPagination } from 'src/common';
 import { PaginationQueryDto } from 'src/common/dto/pagination.dto';
 
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { FilterRoleDto } from './dto/filter.dto';
 import { UpdateAndRemoveRoleDto } from './dto/update-role.dto';
@@ -16,7 +17,10 @@ import { RoleRepository } from './repository/role.repository';
 @Injectable()
 export class RolesService {
   #logger = new Logger(RolesService.name);
-  constructor(private readonly roleRepository: RoleRepository) {}
+  constructor(
+    private readonly roleRepository: RoleRepository,
+    private readonly prisma: PrismaService,
+  ) {}
   create(_createRoleDto: CreateRoleDto): Promise<Role> {
     return this.roleRepository.create({
       name: _createRoleDto.name,
@@ -75,5 +79,19 @@ export class RolesService {
   async softDelete(id: number): Promise<Role> {
     const role: Role = await this.roleRepository.findById(id);
     return await this.roleRepository.softDelete(role.id, role.isDeleted);
+  }
+
+  async remove(id: number): Promise<void> {
+    try {
+      this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+        const permissions: number[] =
+          await this.roleRepository.findPermissionsByRoleId(id);
+        await this.roleRepository.removePermissions(id, permissions, tx);
+        await this.roleRepository.removeRole(id, tx);
+      });
+    } catch (error) {
+      this.#logger.error(error.message, error.stack);
+      throw new InternalServerErrorException("Can't delete role");
+    }
   }
 }
