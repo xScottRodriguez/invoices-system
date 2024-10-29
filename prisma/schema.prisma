@@ -25,6 +25,7 @@ model User {
 model Role {
   id          Int              @id @default(autoincrement()) @map("id")
   name        String           @map("name") @db.VarChar(50)
+  isDeleted   Boolean          @default(false) @map("is_deleted")
   permissions RolePermission[]
   users       User[]
 

@@ -93,4 +93,14 @@ export class RoleRepository implements IRoleRepository {
       },
     });
   }
+  async softDelete(roleId: number, isDeleted: boolean = false): Promise<Role> {
+    return this._prisma.role.update({
+      where: {
+        id: roleId,
+      },
+      data: {
+        isDeleted: !isDeleted,
+      },
+    });
+  }
 }

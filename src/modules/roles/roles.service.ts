@@ -72,7 +72,8 @@ export class RolesService {
     return await this.roleRepository.removePermissions(roleId, permissions);
   }
 
-  remove(id: number): string {
-    return `This action removes a #${id} role`;
+  async softDelete(id: number): Promise<Role> {
+    const role: Role = await this.roleRepository.findById(id);
+    return await this.roleRepository.softDelete(role.id, role.isDeleted);
   }
 }

@@ -2,10 +2,19 @@
 .github
 .vscode
 coverage
-docker-compose.yml
+docker-compose*.yml
 README.md
 
 # Node Files #
 node_modules
 npm-debug.log
 npm-debug.log.*
+
+# Environment Files #
+.env
+*.env
+
+# Logs #
+logs
+*.log
+
