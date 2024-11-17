@@ -32,7 +32,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     }
 
     if (typeof originalResponse === 'object') {
-      return { ...originalResponse, message: undefined };
+      return originalResponse.message;
     }
 
     return originalResponse;

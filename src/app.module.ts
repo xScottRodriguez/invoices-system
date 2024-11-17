@@ -7,6 +7,7 @@ import { PermissionsModule } from './modules/permissions/permissions.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { RolePermissionsModule } from './modules/role-permissions/role-permissions.module';
 import { RolesModule } from './modules/roles/roles.module';
+import { SupplierModule } from './modules/supplier/supplier.module';
 import { UsersModule } from './modules/users/users.module';
 
 @Module({
@@ -21,6 +22,7 @@ import { UsersModule } from './modules/users/users.module';
     RolesModule,
     RolePermissionsModule,
     PermissionsModule,
+    SupplierModule,
   ],
   controllers: [],
   providers: [],

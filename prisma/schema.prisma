@@ -99,12 +99,12 @@ model Customer {
 }
 
 model Supplier {
-  id            Int        @id @default(autoincrement()) @map("id")
-  name          String     @map("name") @db.VarChar(100)
-  contact_email String?    @map("contact_email") @db.VarChar(100)
-  phone         String?    @map("phone") @db.VarChar(20)
-  address       String?    @map("address") @db.VarChar(255)
-  purchases     Purchase[]
+  id           Int        @id @default(autoincrement()) @map("id")
+  name         String     @map("name") @db.VarChar(100)
+  contactEmail String?    @map("contact_email") @db.VarChar(200)
+  phone        String?    @map("phone") @db.VarChar(20)
+  address      String?    @map("address") @db.VarChar(255)
+  purchases    Purchase[]
 
   @@map("suppliers")
 }
