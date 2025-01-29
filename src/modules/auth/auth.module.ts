@@ -10,6 +10,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { EncoderService } from './encoder.service';
 import { JwtStrategy } from './strategy';
+import { LoggerModule } from '../logger/logger.module';
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
@@ -18,6 +19,7 @@ import { JwtStrategy } from './strategy';
       signOptions: { expiresIn: envs.jwtExpiration ?? '2h' },
     }),
     UsersModule,
+    LoggerModule,
   ],
   providers: [AuthService, ResponseHandler, EncoderService, JwtStrategy],
   controllers: [AuthController],

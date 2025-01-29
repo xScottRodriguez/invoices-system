@@ -34,8 +34,7 @@ services:
 
 
 volumes:
-  sqlserver-data:
-    driver: local
+  db-data:
 
 networks:
   prueba-network:

@@ -6,6 +6,7 @@ import { ResponseHandler } from 'src/common/response.handler';
 import { AuthService } from './auth.service';
 import { LoginDto, CreateUserDto, UserResponseDto } from './dto';
 import { ISignIn } from './interfaces';
+import { LoggerService } from '../logger/logger.service';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -13,29 +14,36 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly responseHandler: ResponseHandler,
-  ) { }
+    private readonly loggerService: LoggerService,
+  ) {}
 
   @ApiOkResponse({ type: ResponseDto<UserResponseDto> })
   @ApiBody({ type: CreateUserDto })
   @Post('sign-up')
   async register(@Body() user: CreateUserDto): Promise<ResponseDto<ISignIn>> {
     const data: ISignIn = await this.authService.signUp(user);
-    return this.responseHandler.send<ISignIn>(
-      HttpStatus.CREATED,
-      data,
-      ['User created successfully'],
-    );
+    return this.responseHandler.send<ISignIn>(HttpStatus.CREATED, data, [
+      'User created successfully',
+    ]);
   }
 
   @ApiOkResponse({ type: ResponseDto<UserResponseDto>, status: HttpStatus.OK })
   @ApiBody({ type: LoginDto })
   @Post('sign-in')
   async signIn(@Body() user: LoginDto): Promise<ResponseDto<ISignIn>> {
-    const data: ISignIn = await this.authService.signIn(user);
+    try {
+      const data: ISignIn = await this.authService.signIn(user);
 
-    return this.responseHandler.send<{
-      user: UserResponseDto;
-      accessToken: string;
-    }>(HttpStatus.OK, data, ['User signed in successfully']);
+      return this.responseHandler.send<{
+        user: UserResponseDto;
+        accessToken: string;
+      }>(HttpStatus.OK, data, ['User signed in successfully']);
+    } catch (error) {
+      this.loggerService.error(`Error en ${AuthController.name}`, {
+        error: error.message,
+        stack: error.stack,
+      });
+      throw error;
+    }
   }
 }

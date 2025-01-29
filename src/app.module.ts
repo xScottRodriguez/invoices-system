@@ -9,6 +9,7 @@ import { RolePermissionsModule } from './modules/role-permissions/role-permissio
 import { RolesModule } from './modules/roles/roles.module';
 import { SupplierModule } from './modules/supplier/supplier.module';
 import { UsersModule } from './modules/users/users.module';
+import { LoggerModule } from './modules/logger/logger.module';
 
 @Module({
   imports: [
@@ -23,9 +24,10 @@ import { UsersModule } from './modules/users/users.module';
     RolePermissionsModule,
     PermissionsModule,
     SupplierModule,
+    LoggerModule,
   ],
   controllers: [],
   providers: [],
-  exports: [PrismaModule],
+  exports: [PrismaModule, LoggerModule],
 })
 export class AppModule {}
