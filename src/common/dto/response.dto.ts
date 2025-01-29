@@ -1,6 +1,18 @@
 import { HttpStatus } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 
+
+class MetaDto {
+  currentPage: number;
+  totalItems: number;
+  totalPages: number;
+}
+
+class LinksDto {
+  next: number | null;
+  prev: number | null;
+}
+
 export class ResponseDto<T> {
   @ApiProperty({
     example: HttpStatus.CREATED,
@@ -17,5 +29,8 @@ export class ResponseDto<T> {
     example: 'User created successfully',
     description: 'Message to the user',
   })
-  message: string;
+  messages: string[];
+
+  meta?: MetaDto;
+  links?: LinksDto;
 }

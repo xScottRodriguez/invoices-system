@@ -34,24 +34,24 @@ export class RolesController {
   constructor(
     private readonly rolesService: RolesService,
     private readonly response: ResponseHandler,
-  ) {}
+  ) { }
   @CheckActionAndResource(Action.create, Resource.roles)
   @Post()
   async create(
     @Body() createRoleDto: CreateRoleDto,
   ): Promise<ResponseDto<Role>> {
     const response: Role = await this.rolesService.create(createRoleDto);
-    return this.response.success<Role>(
+    return this.response.send<Role>(
       HttpStatus.CREATED,
       response,
-      'Role created',
+      ['Role created'],
     );
   }
   @CheckActionAndResource(Action.read, Resource.roles)
   @Get()
   findAll(
     @Query() pagination: PaginationQueryDto<FilterRoleDto>,
-  ): Promise<IPagination<Role>> {
+  ): Promise<ResponseDto<Role[]>> {
     return this.rolesService.findAll(pagination);
   }
 
@@ -63,7 +63,7 @@ export class RolesController {
       throw new NotFoundException(`Role with id ${id} not found`);
     }
 
-    return this.response.success<Role>(HttpStatus.OK, role, 'Role found');
+    return this.response.send<Role>(HttpStatus.OK, role, ['Role found']);
   }
 
   @CheckActionAndResource(Action.update, Resource.roles)
@@ -73,7 +73,7 @@ export class RolesController {
     @Body() updateAndRemoveRoleDto: UpdateAndRemoveRoleDto,
   ): Promise<ResponseDto<string>> {
     await this.rolesService.update(roleId, updateAndRemoveRoleDto);
-    return this.response.success<string>(HttpStatus.OK, null, 'Role updated');
+    return this.response.send<string>(HttpStatus.OK, null, ['Role updated']);
   }
   @CheckActionAndResource(Action.delete, Resource.roles)
   @Delete('/remove-permissions/:roleId')
@@ -85,10 +85,10 @@ export class RolesController {
       roleId,
       updateAndRemoveRoleDto.permissions,
     );
-    return this.response.success<string>(
+    return this.response.send<string>(
       HttpStatus.OK,
       null,
-      'Permissions removed',
+      ['Permissions removed'],
     );
   }
 
@@ -99,7 +99,7 @@ export class RolesController {
   ): Promise<ResponseDto<void>> {
     await this.rolesService.remove(+id);
 
-    return this.response.success<void>(HttpStatus.OK, null, 'Role removed');
+    return this.response.send<void>(HttpStatus.OK, null, ['Role removed']);
   }
 
   @CheckActionAndResource(Action.delete, Resource.roles)
@@ -108,6 +108,6 @@ export class RolesController {
     @Param('id', ParseIntPipe) id: number,
   ): Promise<ResponseDto<string>> {
     await this.rolesService.softDelete(id);
-    return this.response.success<string>(HttpStatus.OK, null, 'Role deleted');
+    return this.response.send<string>(HttpStatus.OK, null, ['Role deleted']);
   }
 }

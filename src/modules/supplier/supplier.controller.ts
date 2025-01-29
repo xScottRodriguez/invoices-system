@@ -11,13 +11,15 @@ import {
 import { CreateSupplierDto } from './dto/create-supplier.dto';
 import { UpdateSupplierDto } from './dto/update-supplier.dto';
 import { SupplierService } from './supplier.service';
+import { Supplier } from './entities/supplier.entity';
+import { ResponseDto } from 'src/common';
 
 @Controller('suppliers')
 export class SupplierController {
-  constructor(private readonly supplierService: SupplierService) {}
+  constructor(private readonly supplierService: SupplierService) { }
 
   @Post()
-  create(@Body() createSupplierDto: CreateSupplierDto): unknown {
+  create(@Body() createSupplierDto: CreateSupplierDto): Promise<ResponseDto<Supplier>> {
     return this.supplierService.create(createSupplierDto);
   }
 

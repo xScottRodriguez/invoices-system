@@ -1,15 +1,15 @@
 // src/common/response.handler.ts
 import { HttpStatus, Injectable } from '@nestjs/common';
 
-import { IResponse } from './interfaces';
+import { ResponseDto } from './dto';
 
 @Injectable()
 export class ResponseHandler {
-  success<T>(statusCode: HttpStatus, data: T, message: string): IResponse<T> {
+  send<T>(statusCode: HttpStatus, data: T, messages: string[]): ResponseDto<T> {
     return {
       statusCode,
       data,
-      message,
+      messages,
     };
   }
 }

@@ -40,7 +40,7 @@ export class UsersController {
   constructor(
     private readonly responseHandler: ResponseHandler,
     private readonly userService: UsersService,
-  ) {}
+  ) { }
 
   @ApiOkResponse({
     description: 'User profile retrieved successfully.',
@@ -48,12 +48,12 @@ export class UsersController {
   })
   @CheckActionAndResource(Action.read, Resource.users)
   @Get('profile')
-  async getProfile(@GetUser() user: UserEntity): Promise<IResponse<UserDto>> {
+  async getProfile(@GetUser() user: UserEntity): Promise<ResponseDto<UserDto>> {
     const userDto = new UserDto(user);
-    return this.responseHandler.success(
+    return this.responseHandler.send(
       HttpStatus.OK,
       userDto,
-      'User profile retrieved successfully.',
+      ['User profile retrieved successfully.'],
     );
   }
 
@@ -67,12 +67,13 @@ export class UsersController {
   async updateProfile(
     @Body() user: UpdateUserDto,
     @GetUser('id', ParseIntPipe) userId: number,
-  ): Promise<IResponse<unknown>> {
+  ): Promise<ResponseDto<unknown>> {
     await this.userService.update(user, userId);
-    return this.responseHandler.success(
+    return this.responseHandler.send(
+
       HttpStatus.OK,
       null,
-      'User Profile Updated Successfully.',
+      ['User Profile Updated Successfully.'],
     );
   }
 
@@ -80,12 +81,12 @@ export class UsersController {
   @CheckActionAndResource(Action.delete, Resource.users)
   async deleteProfile(
     @Param('id', ParseIntPipe) userId: number,
-  ): Promise<IResponse<unknown>> {
+  ): Promise<ResponseDto<unknown>> {
     await this.userService.remove(userId);
-    return this.responseHandler.success(
+    return this.responseHandler.send(
       HttpStatus.OK,
       null,
-      'User Profile Deleted Successfully.',
+      ['User Profile Deleted Successfully.'],
     );
   }
 }

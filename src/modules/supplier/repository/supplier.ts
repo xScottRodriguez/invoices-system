@@ -9,25 +9,21 @@ import { ISupplierRepository } from './supplier.repository';
 
 export class SupplierRepository implements ISupplierRepository {
   #logger = new Logger(SupplierRepository.name);
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
-  create(createSupplierDto: CreateSupplierDto): Promise<Supplier[]> {
+  create(createSupplierDto: CreateSupplierDto): Promise<Supplier> {
     this.#logger.debug('Creating a new supplier', {
       createSupplierDto,
     });
-    return this.prisma.supplier.findMany();
-
-    /** 
-     * return this.prisma.supplier.create({
+    return this.prisma.supplier.create({
       data: {
         name: createSupplierDto.name,
         contactEmail: createSupplierDto.contactEmail,
         phone: createSupplierDto.phone,
         address: createSupplierDto.address,
       },
-      
-    });
-      **/
+    })
+
   }
 
   findAll(): unknown[] {

@@ -1,6 +1,6 @@
 import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
 import { ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { IResponse, ResponseDto } from 'src/common';
+import { ResponseDto } from 'src/common';
 import { ResponseHandler } from 'src/common/response.handler';
 
 import { AuthService } from './auth.service';
@@ -13,29 +13,29 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly responseHandler: ResponseHandler,
-  ) {}
+  ) { }
 
   @ApiOkResponse({ type: ResponseDto<UserResponseDto> })
   @ApiBody({ type: CreateUserDto })
   @Post('sign-up')
-  async register(@Body() user: CreateUserDto): Promise<IResponse<ISignIn>> {
+  async register(@Body() user: CreateUserDto): Promise<ResponseDto<ISignIn>> {
     const data: ISignIn = await this.authService.signUp(user);
-    return this.responseHandler.success<ISignIn>(
+    return this.responseHandler.send<ISignIn>(
       HttpStatus.CREATED,
       data,
-      'User created successfully',
+      ['User created successfully'],
     );
   }
 
   @ApiOkResponse({ type: ResponseDto<UserResponseDto>, status: HttpStatus.OK })
   @ApiBody({ type: LoginDto })
   @Post('sign-in')
-  async signIn(@Body() user: LoginDto): Promise<IResponse<ISignIn>> {
+  async signIn(@Body() user: LoginDto): Promise<ResponseDto<ISignIn>> {
     const data: ISignIn = await this.authService.signIn(user);
 
-    return this.responseHandler.success<{
+    return this.responseHandler.send<{
       user: UserResponseDto;
       accessToken: string;
-    }>(HttpStatus.OK, data, 'User signed in successfully');
+    }>(HttpStatus.OK, data, ['User signed in successfully']);
   }
 }

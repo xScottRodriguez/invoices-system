@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { IPagination, IPaginationOptions, IPrismaModel } from 'src/common';
+import { Injectable, HttpStatus } from '@nestjs/common';
+import { IPagination, IPaginationOptions, IPrismaModel, ResponseDto } from 'src/common';
 
 interface IPaginationMeta {
   take: number;
@@ -15,12 +15,12 @@ interface IPaginationLinks {
 }
 @Injectable()
 export class PaginationService {
-  constructor() {}
+  constructor() { }
 
   async paginate<Model>(
     model: IPrismaModel<Model>,
     options: IPaginationOptions,
-  ): Promise<IPagination<Model>> {
+  ): Promise<ResponseDto<Model[]>> {
     const { where = {}, limit, orderBy, page, select } = options;
     const { skip, take } = this.getTakeAndSkip(page, limit);
 
@@ -39,7 +39,7 @@ export class PaginationService {
       args['select'] = select;
     }
 
-    const [data, totalItems] = await Promise.all([
+    const [data, totalItems]: [Model[], number] = await Promise.all([
       model.findMany(args),
       model.count({ where }),
     ]);
@@ -61,6 +61,8 @@ export class PaginationService {
         next,
         prev,
       },
+      statusCode: HttpStatus.OK,
+      messages: ['Data retrieved successfully']
     };
   }
   private getPagination({

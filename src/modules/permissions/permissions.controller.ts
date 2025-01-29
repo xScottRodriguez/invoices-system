@@ -23,7 +23,7 @@ export class PermissionsController {
   constructor(
     private readonly permissionsService: PermissionsService,
     private readonly responseHandler: ResponseHandler,
-  ) {}
+  ) { }
 
   @ApiOkResponse({
     description: 'Permission created successfully.',
@@ -45,10 +45,10 @@ export class PermissionsController {
   async findAll(): Promise<ResponseDto<Permission[]>> {
     const data: Permission[] = await this.permissionsService.findAll();
 
-    return this.responseHandler.success(
+    return this.responseHandler.send(
       HttpStatus.OK,
       data,
-      'Permissions retrieved successfully.',
+      ['Permissions retrieved successfully.'],
     );
   }
 

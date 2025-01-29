@@ -5,7 +5,7 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { Prisma, Role } from '@prisma/client';
-import { IPagination } from 'src/common';
+import { IPagination, ResponseDto } from 'src/common';
 import { PaginationQueryDto } from 'src/common/dto/pagination.dto';
 
 import { PrismaService } from '../prisma/prisma.service';
@@ -20,7 +20,7 @@ export class RolesService {
   constructor(
     private readonly roleRepository: RoleRepository,
     private readonly prisma: PrismaService,
-  ) {}
+  ) { }
   create(_createRoleDto: CreateRoleDto): Promise<Role> {
     return this.roleRepository.create({
       name: _createRoleDto.name,
@@ -29,7 +29,7 @@ export class RolesService {
 
   findAll(
     pagination: PaginationQueryDto<FilterRoleDto>,
-  ): Promise<IPagination<Role>> {
+  ): Promise<ResponseDto<Role[]>> {
     const { page, limit, filters, orderBy } = pagination;
     return this.roleRepository.findAll({
       page,

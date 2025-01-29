@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Prisma, Role } from '@prisma/client';
-import { IPagination } from 'src/common';
+import { IPagination, ResponseDto } from 'src/common';
 
 import { PaginationService } from '@/modules/prisma/pagination.service';
 import { PrismaService } from '@/modules/prisma/prisma.service';
@@ -20,14 +20,14 @@ export class RoleRepository implements IRoleRepository {
   constructor(
     private readonly _prisma: PrismaService,
     private readonly paginationService: PaginationService,
-  ) {}
+  ) { }
 
   findAll({
     limit,
     orderBy,
     page,
     filters,
-  }: IRoleFilters): Promise<IPagination<Role>> {
+  }: IRoleFilters): Promise<ResponseDto<Role[]>> {
     const where = filters?.name ? { name: { contains: filters.name } } : {};
 
     return this.paginationService.paginate<Role>(this._prisma.role, {
